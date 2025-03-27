@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>计组 | zx's Blog</title><meta name="author" content="zx"><meta name="copyright" content="zx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="计组笔记学到第三章的时候发现计组的各个部分是联系紧密的，因此补全一下前面的笔记，顺便完成对体系的整理，方便后续的复习。 第一章 计算机系统概述1.2 计算机层次结构1、计算机硬件系统由运算器、存储器、控制器、输入设备和输出设备5大部件组成。 12345678910输入设备包括键盘、鼠标、扫描仪、摄像机等。输出设备包括显示器、打印机等。存储器包括主存储器和辅助存储器，cpu可以直接访问主存。主存的工">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计组">
+<meta property="og:url" content="https://zx2023qj.github.io/2025/03/22/%E8%AE%A1%E7%BB%84/index.html">
+<meta property="og:site_name" content="zx&#39;s Blog">
+<meta property="og:description" content="计组笔记学到第三章的时候发现计组的各个部分是联系紧密的，因此补全一下前面的笔记，顺便完成对体系的整理，方便后续的复习。 第一章 计算机系统概述1.2 计算机层次结构1、计算机硬件系统由运算器、存储器、控制器、输入设备和输出设备5大部件组成。 12345678910输入设备包括键盘、鼠标、扫描仪、摄像机等。输出设备包括显示器、打印机等。存储器包括主存储器和辅助存储器，cpu可以直接访问主存。主存的工">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zx2023qj.github.io/img/3.jpg">
+<meta property="article:published_time" content="2025-03-22T02:31:45.000Z">
+<meta property="article:modified_time" content="2025-03-27T02:07:45.002Z">
+<meta property="article:author" content="zx">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="考研">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zx2023qj.github.io/img/3.jpg"><link rel="shortcut icon" href="/img/3.jpg"><link rel="canonical" href="https://zx2023qj.github.io/2025/03/22/%E8%AE%A1%E7%BB%84/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '计组',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-03-27 10:07:45'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/3.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">23</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/2.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="zx's Blog"><span class="site-name">zx's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">计组</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-03-22T02:31:45.000Z" title="发表于 2025-03-22 10:31:45">2025-03-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-03-27T02:07:45.002Z" title="更新于 2025-03-27 10:07:45">2025-03-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E8%80%83%E7%A0%94/">考研</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="计组"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="计组笔记"><a href="#计组笔记" class="headerlink" title="计组笔记"></a>计组笔记</h1><p>学到第三章的时候发现计组的各个部分是联系紧密的，因此补全一下前面的笔记，顺便完成对体系的整理，方便后续的复习。</p>
+<h2 id="第一章-计算机系统概述"><a href="#第一章-计算机系统概述" class="headerlink" title="第一章 计算机系统概述"></a>第一章 计算机系统概述</h2><h3 id="1-2-计算机层次结构"><a href="#1-2-计算机层次结构" class="headerlink" title="1.2 计算机层次结构"></a>1.2 计算机层次结构</h3><p>1、计算机硬件系统由运算器、存储器、控制器、输入设备和输出设备5大部件组成。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">输入设备包括键盘、鼠标、扫描仪、摄像机等。</span><br><span class="line">输出设备包括显示器、打印机等。</span><br><span class="line">存储器包括主存储器和辅助存储器，cpu可以直接访问主存。主存的工作方式是按地址存取方式。</span><br><span class="line">mar和mdr在逻辑上属于存储器的组成部分，存储从存储器中读取或者写入的数据，但是实际上被集成在cpu中。cache也是在cpu内，但是实际上是属于存储器的部分。</span><br><span class="line">mar的长度与pc的长度相等。</span><br><span class="line">mdr的位数通常等于存储字长。</span><br><span class="line">运算器用于进行算术计算和逻辑运算。运算器的核心是alu。运算器中还包括acc、mq、操作数寄存器(X)、变址寄存器(IX)、br、psw等寄存器。</span><br><span class="line">控制器由pc，ir，cu组成。pc存放当前指令的地址，具有自动递增功能，在pc和mdr之间有直接通路。ir存放当前指令，内容来自mdr（而mdr来自于pc），指令中的操作码OP(IR)送至cu，而地址码Ad(IR)送往mar，用于取操作数。</span><br><span class="line">一般将运算器和控制器集成到一起，也就是cpu，cpu包含alu、gprs、psw、cu、ir、pc、mar、mdr。cpu和主存共同构成主机，辅存和io设备称为外设。</span><br><span class="line">cpu和主存通过总线相连，总线分为地址、控制和数据三组信号线。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">pc: program counter</span><br><span class="line">mar: memory address register</span><br><span class="line">mdr: memory data register</span><br><span class="line">alu: arithmetic and logic unit</span><br><span class="line">acc: accumulator</span><br><span class="line">mq: multiplier quotient</span><br><span class="line">br: base register</span><br><span class="line">psw: program status word</span><br><span class="line">操作数寄存器x和变址寄存器ix找不到为什么是这么叫的，可能是某个远古指令集的遗留。</span><br><span class="line">ir: instruction register</span><br><span class="line">cu: control unit</span><br><span class="line">cpu: central processing unit</span><br><span class="line">gprs: general purpose register set</span><br></pre></td></tr></table></figure>
+
+<p>2、计算机软件分为系统软件和应用软件。系统软件如操作系统os，数据库管理系统dbms，语言处理程序、分布式软件系统等等，应用软件如工程设计类程序、数据统计与处理程序等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">os: operating system</span><br><span class="line">dbms: database management system</span><br></pre></td></tr></table></figure>
+
+<p>3、计算机软件中的语言分为机器语言（二进制代码语言）、汇编语言和高级语言。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">汇编程序（汇编器）可以将汇编语言转化为机器语言。</span><br><span class="line">解释程序（解释器）可以将高级语言转化为机器语言。</span><br><span class="line">编译程序（编译器）可以将高级语言转化为汇编语言或者机器语言。.</span><br></pre></td></tr></table></figure>
+
+<p>4、计算机系统的层次结构可以分为虚拟机器M4（高级语言层）、虚拟机器M3（汇编语言层）、虚拟机器M2（操作系统层）、传统机器M1（传统机器语言层）、微程序机器M0（微程序机器层）</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">M4通过编译器到达M3、M3通过汇编器到达M2、M2用机器语言解释操作系统，通过ISA到达M1层，M0和M1层为硬件层，是计组的主要内容。</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">isa: instruction set architecture</span><br></pre></td></tr></table></figure>
+
+<p>5、计算机每条指令的执行过程包括：根据pc从主存中取指令，对指令进行译码、计算下一条指令地址、取操作数并执行、将结果送回存储器。程序就是多条指令的执行。</p>
+<p>6、翻译过程的四个阶段：hello.c -&gt; hello.i -&gt; hello.s -&gt; hello.o -&gt; hello(elf&#x2F;exe)</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">以gcc编译器为例，将c语言转为可执行文件格式。</span><br><span class="line">hello.c（源程序）通过cpp转为hello.i</span><br><span class="line">hello.i（预处理文件）通过cc1转为hello.s</span><br><span class="line">hello.s（汇编语言文件）通过as转为hello.o</span><br><span class="line">hello.o（可重定位目标代码文件）通过ld转为hello</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">.c表示c语言程序文件；.i可能表示include，中间文件；.s可能是assemble，表示汇编语言文件；.o可能表示object file，目标文件。</span><br><span class="line">cpp: c preprocessor</span><br><span class="line">cc1: c compiler 1</span><br><span class="line">as: assembler</span><br><span class="line">ld: linker</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-计算机性能指标"><a href="#1-3-计算机性能指标" class="headerlink" title="1.3 计算机性能指标"></a>1.3 计算机性能指标</h3><p>1、机器字长指计算机一次整数运算能处理的二进制数据的位数；指令字长指一个指令字中所包含的二进制数据的位数；存储字长指一个存储单元所包含的二进制数据的位数。</p>
+<p>2、数据通路带宽是指数据总线一次能并行传送信息的位数，指的是外部数据总线的宽度，跟cpu内部的数据总线宽度有可能不同。</p>
+<p>3、mar的位数反映了存储单元的个数，因为mar要能够指向主存的所有存储单元；mdr的位数反映了存储单元的字长，也就是一次能够传输的数据长度。</p>
+<p>4、吞吐量是指系统在单位时间内处理请求的数量，系统吞吐量主要取决于主存的存取周期。响应时间指从用户向计算机发送一个请求到系统对该请求作出响应并获得所需结果的等待时间。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">响应时间包括运行一个程序花费的时间(cpu)，磁盘访问时间、存储器访问时间、IO操作时间、操作系统开销时间等(等待时间)。</span><br></pre></td></tr></table></figure>
+
+<p>5、cpu时钟周期是cpu工作的最小时间单位。主频（cpu时钟频率）是时钟周期的倒数，是衡量机器速度的重要参数。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CPU时钟周期 = 1/主频，主频通常以Hz为单位，周期为时间单位，主频表示每秒的时钟周期数</span><br></pre></td></tr></table></figure>
+
+<p>6、cpi是指执行一条指令所需的时钟周期数。<br>不同指令的时钟周期数不同，因此对于一个程序而言，其cpi指该程序中所有指令执行所需的平均时钟周期数，即平均cpi。即对于一个程序或者系统而言，单独的cpi是没有意义的，无法准确地衡量程序执行的速度。<br>ips是指每秒可以执行的指令的数量。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cpi: cycle per instruction</span><br><span class="line">ips: instructions per second</span><br><span class="line">ips = 主频/平均cpi</span><br><span class="line">cpi（单位） = 时钟周期/指令</span><br><span class="line">主频（单位） = 时钟周期/秒</span><br><span class="line">ips（单位） = 指令/秒</span><br></pre></td></tr></table></figure>
+
+<p>7、cpu执行时间是cpu性能的体现，取决于主频、cpi和指令条数。主频、cpi和指令条数是相互限制的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cpu执行时间 = cpu时钟周期数/主频</span><br><span class="line">cpu时钟周期数（时钟周期），主频（时钟周期/秒）</span><br><span class="line">cpu时钟周期数 = 指令条数 * cpi</span><br><span class="line">指令条数（指令） cpi（时钟周期/指令）</span><br><span class="line">cpu执行时间 = 指令条数 * cpi / 主频</span><br><span class="line">由于上文可知主频 = cpi * ips</span><br><span class="line">可得cpu执行时间 = 指令条数 / ips</span><br></pre></td></tr></table></figure>
+
+<p>8、mips表示每秒执行多少百万条指令，elops表示每秒执行多少次浮点运算</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">mips: million instructions per second</span><br><span class="line">flops: floating-point operations per second</span><br><span class="line">mips = 主频 / (cpi * 10^6)</span><br><span class="line">除了flops，还有mflops,gflops,tflops,pflops,eflops,zflops等表示大量浮点运算的指标，m,g,t,p,e,z跟存储容量的大小是对应的数值</span><br></pre></td></tr></table></figure>
+
+<p>9、基准程序也可以用来测试机器的性能</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">基准程序: benchmarks</span><br></pre></td></tr></table></figure>
+
+<p>10、系列机指具有基本相同体系结构，使用相同基本指令系统的多个不同型号的计算机组成的产品系列。</p>
+<p>11、兼容指软件或硬件的通用性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">向后兼容(backward compatibility)：指新版本的软件或硬件能够支持旧版本</span><br><span class="line">backward在此处可以理解为落后的版本的意思</span><br><span class="line">向前兼容(forward compatibility)：指旧版本的软件或硬件能够对新版本进行兼容（比较难实现）</span><br><span class="line">向上兼容和向前兼容对应，向后兼容和向下兼容对应。</span><br></pre></td></tr></table></figure>
+
+<p>12、固件，将程序固化在rom中，是一种具有软件特性的硬件，具有软件和硬件各自的优点。</p>
+<h2 id="第七章-输入-输出系统"><a href="#第七章-输入-输出系统" class="headerlink" title="第七章 输入&#x2F;输出系统"></a>第七章 输入&#x2F;输出系统</h2><h3 id="7-1-IO系统"><a href="#7-1-IO系统" class="headerlink" title="7.1 IO系统"></a>7.1 IO系统</h3><p>1、IO系统一般由IO软件和IO硬件两部分构成。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IO软件包括驱动程序、用户程序、管理程序、升级补丁等。</span><br><span class="line">cpu的IO设备的交换通常采用IO指令和通道指令实现。</span><br><span class="line">IO硬件包括外部设备（外设）、设备控制器和接口、IO总线等。</span><br><span class="line">设备控制器通过IO接口与总线相连。</span><br></pre></td></tr></table></figure>
+
+<p>2、输入设备主要是键盘和鼠标，输出设备主要是显示器、打印机，外设还包括磁盘存储器和光盘存储器等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">按照第一章的内容，cpu和主存构成主机，其他的都是外设。</span><br></pre></td></tr></table></figure>
+
+<p>3、显示器是用点阵方式运行的设备，主要参数有屏幕大小、分辨率、灰度级、刷新频率等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">关于显示器中的显示存储器vram，用于存储显示在显示屏上的信息。</span><br><span class="line">点阵显示每个像素点是一bit。</span><br><span class="line">vram容量 = 分辨率 * 灰度级位数</span><br><span class="line">vram带宽 = varm容量 * 帧频</span><br><span class="line">灰度级位数就是类似rgba之类的东西，位数越高能表示的颜色就越多。</span><br><span class="line">vram: video random access memory</span><br></pre></td></tr></table></figure>
+
+<p>4、IO的控制方式有四种：程序查询方式、程序中断方式、DMA方式、通道方式。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">方式1和2适用于传输速率较低的外设，方式3和4适用于传输速率较高的外设。</span><br><span class="line">通道方式：通过系统中的通道控制部件，在需要传输数据时主机启动有关通道，就可以自动执行通道程序对挂载在通道上的外设进行数据传输，实现IO操作。</span><br></pre></td></tr></table></figure>
+
+<p>5、IO设备与cpu的连接情况</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IO外设 &lt;-&gt; 设备控制器 &lt;-&gt; IO接口 &lt;-&gt; 总线 &lt;-&gt; cpu/主存</span><br></pre></td></tr></table></figure>
+
+<p>6、IO端口、IO接口、设备控制器的不同</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">IO端口是软件上的概念，例如usb串行端口的端口号为0x3f8，跟网络端口是类似的概念。</span><br><span class="line">IO接口是硬件上的概念，提供了物理上的连接点，连接了设备控制器和系统总线，例如use接口，sata接口，m.2插槽，pcle插槽等。</span><br><span class="line">设备控制器则是用于管理IO模块的硬件设备，如磁盘控制器、网卡控制器、显卡gpu核心，nvme ssd的主控芯片等，为外设的数据提供格式转换和兼容服务。</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-IO接口"><a href="#7-2-IO接口" class="headerlink" title="7.2 IO接口"></a>7.2 IO接口</h3><p>1、IO接口是用于主机和外设之间的信息交换部件，能够处理外设和主机之间的工作方式、数据格式和工作速度的差异。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IO接口的主要功能有：地址译码和设备选择、实现主机和外设的通信联络控制。实现数据缓冲，信号格式的转换，传送控制命令和状态信息。</span><br></pre></td></tr></table></figure>
+
+<p>2、IO接口的基本结构包括数据缓冲寄存器、状态寄存器、控制寄存器、地址译码和IO控制逻辑、外设界面控制逻辑。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">数据缓冲寄存器用于接收或者发送从主机或者外设传输的数据，数据缓冲寄存器存在的意义在于主机和外设的工作频率的不同，无法实时的传输，因此需要对数据进行缓冲，以达到外设和主机的数据的同步。</span><br><span class="line"></span><br><span class="line">状态寄存器用于存储接口或外设的当前状态信息，如就绪、完成和错误等状态。</span><br><span class="line">控制寄存器用于配置IO接口的工作模式及参数，如传输方向、中断使能、通信参数（波特率、数据位宽、校验方式）。</span><br><span class="line">由于状态寄存器和控制寄存器在传送方向上的不同，在访问时间上的不同，因此可以将其合二为一，称为状态/控制寄存器。</span><br><span class="line"></span><br><span class="line">地址译码和IO控制逻辑用于识别cpu发送的地址信号，对其进行译码，以及生成读写信号，控制数据的传送方向。</span><br><span class="line"></span><br><span class="line">外设界面控制逻辑用于管理IO接口和外设的物理层通信，包括信号传输、时序控制、协议处理等。</span><br></pre></td></tr></table></figure>
+
+<p>3、IO接口跟总线相连，分为地址总线、数据总线和控制总线。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数据总线跟数据缓冲寄存器、状态/控制寄存器连通，用于传输读写数据、状态信息、控制信息和中断类型号。</span><br><span class="line">地址总线和控制总线都与地址译码和IO控制逻辑连通，用于传输IO接口中的寄存器的地址，读写控制信号、中断请求和响应信号、仲裁信号和握手信号等。</span><br><span class="line">仲裁信号用于解决多个外设同时访存时的冲突。</span><br></pre></td></tr></table></figure>
+
+<p>4、对IO接口中的寄存器的访问是通过IO指令实现的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IO指令只能在操作系统内核的底层IO软件中使用，是一种特权指令。</span><br></pre></td></tr></table></figure>
+
+<p>5、IO接口的类型</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数据传送方式（外设-&gt;主机）：并行接口、串行接口</span><br><span class="line">主机访问IO方式：程序查询接口、中断接口、DMA接口</span><br><span class="line">功能选择灵活性：可编程接口、不可编程接口</span><br></pre></td></tr></table></figure>
+
+<p>6、IO端口是指IO接口中可以被cpu直接访问的寄存器，有数据端口、状态端口和控制端口。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cpu通常可以对数据端口进行读写，对状态端口进行读，对控制端口进行写。</span><br><span class="line">可以注意到，此处的数据端口，状态端口和控制端口与数据缓冲寄存器，状态寄存器和控制寄存器是大致对应的。但是实际上IO端口并不是指这些寄存器，而是指这些寄存器对应的地址。通过IO端口（也就是地址）就能访问到寄存器中的内容。</span><br></pre></td></tr></table></figure>
+
+<p>7、IO端口需要编址才能被cpu访问，每个端口对应一个端口地址，编址方式有独立编址和统一编址两种。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">独立编址和统一编址都是针对存储器而言的。</span><br><span class="line">独立编址也叫做IO映射方式，对所有的IO端口单独进行了编址，与主存中的地址独立开来。</span><br><span class="line">采用独立编址时，相同的地址在IO地址空间和主存空间中是不同的地址空间。因此需要专门的IO指令来表明访问的是IO地址空间还是主存空间。</span><br><span class="line">优点是寻址速度快，方便理解，缺点是增大了控制的复杂性，降低了程序设计的灵活性，增加了cpu的负担。</span><br><span class="line"></span><br><span class="line">统一编址也叫做存储器映射方式，将主存的一部分分给IO，作为IO的地址空间。使用统一指令即可访问IO端口。</span><br><span class="line">优点是不需要额外指令，缺点是缩小了主存空间，且寻址的速度降低。</span><br></pre></td></tr></table></figure>
+
+<p>8、课后习题小知识</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1、独立编址的IO指令主要是用IN/OUT指令（输入/输出类指令）进行数据的传输，而统一编址则是使用通用的访存指令进行数据传输。</span><br><span class="line">2、在IO接口和外设之间存在数据、控制、状态的信息交换，但是不会有中断信号的信息，中断信息是cpu和IO接口之间的信息交换。</span><br><span class="line">3、磁盘驱动器是由磁头、磁盘和读写电路组成的，也就是磁盘本身，不是IO接口。打印机适配器、网络控制器和可编程中断控制器是IO接口，也就是IO控制器。</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-3-IO方式"><a href="#7-3-IO方式" class="headerlink" title="7.3 IO方式"></a>7.3 IO方式</h3></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zx2023qj.github.io">zx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zx2023qj.github.io/2025/03/22/%E8%AE%A1%E7%BB%84/">https://zx2023qj.github.io/2025/03/22/%E8%AE%A1%E7%BB%84/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zx2023qj.github.io" target="_blank">zx's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/">学习</a><a class="post-meta__tags" href="/tags/%E8%80%83%E7%A0%94/">考研</a></div><div class="post_share"><div class="social-share" data-image="/img/3.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2025/03/22/Reversing-Secrets-of-Reverse-Engineering/" title="Reversing Secrets of Reverse Engineering"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Reversing Secrets of Reverse Engineering</div></div></a></div><div class="next-post pull-right"><a href="/2025/03/08/%E6%95%B0%E4%B8%80/" title="数一"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">数一</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2025/02/25/%E8%80%83%E7%A0%94%E6%8B%A9%E6%A0%A1/" title="考研择校"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-25</div><div class="title">考研择校</div></div></a></div><div><a href="/2025/03/08/%E6%95%B0%E4%B8%80/" title="数一"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-08</div><div class="title">数一</div></div></a></div><div><a href="/2025/03/03/%E8%BF%9B%E5%BA%A6/" title="进度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-03</div><div class="title">进度</div></div></a></div><div><a href="/2025/03/26/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="数据结构"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-26</div><div class="title">数据结构</div></div></a></div><div><a href="/2024/12/06/%E6%AF%9B%E6%A6%82%E5%A4%8D%E4%B9%A0/" title="毛概复习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-06</div><div class="title">毛概复习</div></div></a></div><div><a href="/2025/01/02/%E4%B9%A0%E6%A6%82%E5%A4%8D%E4%B9%A0/" title="习概复习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-02</div><div class="title">习概复习</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">zx</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">35</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">23</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zx2023qj"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%A1%E7%BB%84%E7%AC%94%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">计组笔记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E7%AB%A0-%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">第一章 计算机系统概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%B1%82%E6%AC%A1%E7%BB%93%E6%9E%84"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.2 计算机层次结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E8%AE%A1%E7%AE%97%E6%9C%BA%E6%80%A7%E8%83%BD%E6%8C%87%E6%A0%87"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.3 计算机性能指标</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E7%AB%A0-%E8%BE%93%E5%85%A5-%E8%BE%93%E5%87%BA%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.2.</span> <span class="toc-text">第七章 输入&#x2F;输出系统</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-IO%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.2.1.</span> <span class="toc-text">7.1 IO系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-IO%E6%8E%A5%E5%8F%A3"><span class="toc-number">1.2.2.</span> <span class="toc-text">7.2 IO接口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-IO%E6%96%B9%E5%BC%8F"><span class="toc-number">1.2.3.</span> <span class="toc-text">7.3 IO方式</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/26/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="数据结构">数据结构</a><time datetime="2025-03-26T05:26:18.000Z" title="发表于 2025-03-26 13:26:18">2025-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/22/Reversing-Secrets-of-Reverse-Engineering/" title="Reversing Secrets of Reverse Engineering">Reversing Secrets of Reverse Engineering</a><time datetime="2025-03-22T14:35:57.000Z" title="发表于 2025-03-22 22:35:57">2025-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/22/%E8%AE%A1%E7%BB%84/" title="计组">计组</a><time datetime="2025-03-22T02:31:45.000Z" title="发表于 2025-03-22 10:31:45">2025-03-22</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/08/%E6%95%B0%E4%B8%80/" title="数一">数一</a><time datetime="2025-03-08T14:27:47.000Z" title="发表于 2025-03-08 22:27:47">2025-03-08</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/03/%E8%BF%9B%E5%BA%A6/" title="进度">进度</a><time datetime="2025-03-03T07:15:41.000Z" title="发表于 2025-03-03 15:15:41">2025-03-03</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By zx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
