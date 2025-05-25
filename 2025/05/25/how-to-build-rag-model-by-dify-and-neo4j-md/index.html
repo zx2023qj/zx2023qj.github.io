@@ -1,0 +1,275 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>how_to_build_rag_model_by_dify_and_neo4j.md | zx's Blog</title><meta name="author" content="zx"><meta name="copyright" content="zx"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="基于neo4j数据库和dify大模型框架的rag模型搭建本文主要讲述关于如何从pdf文档中提取数据并用于生成知识图谱，搭建基于知识图谱的rag模型的过程。 （其实就是知识库？有一说一因为根本没上课其实我也不知道我做的是啥，但是大概是符合课设要求的） 前置准备neo4j数据库neo4j用于存储从pdf文档中提取的数据。 安装方式有docker或者直接安装两种方式。 可以参考https:&#x2F;&#x2F;neo4j">
+<meta property="og:type" content="article">
+<meta property="og:title" content="how_to_build_rag_model_by_dify_and_neo4j.md">
+<meta property="og:url" content="https://zx2023qj.github.io/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/index.html">
+<meta property="og:site_name" content="zx&#39;s Blog">
+<meta property="og:description" content="基于neo4j数据库和dify大模型框架的rag模型搭建本文主要讲述关于如何从pdf文档中提取数据并用于生成知识图谱，搭建基于知识图谱的rag模型的过程。 （其实就是知识库？有一说一因为根本没上课其实我也不知道我做的是啥，但是大概是符合课设要求的） 前置准备neo4j数据库neo4j用于存储从pdf文档中提取的数据。 安装方式有docker或者直接安装两种方式。 可以参考https:&#x2F;&#x2F;neo4j">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://zx2023qj.github.io/img/3.jpg">
+<meta property="article:published_time" content="2025-05-25T14:37:30.000Z">
+<meta property="article:modified_time" content="2025-05-25T14:40:48.057Z">
+<meta property="article:author" content="zx">
+<meta property="article:tag" content="ai">
+<meta property="article:tag" content="学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://zx2023qj.github.io/img/3.jpg"><link rel="shortcut icon" href="/img/3.jpg"><link rel="canonical" href="https://zx2023qj.github.io/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'how_to_build_rag_model_by_dify_and_neo4j.md',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-05-25 22:40:48'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/3.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">24</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/2.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="zx's Blog"><span class="site-name">zx's Blog</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">how_to_build_rag_model_by_dify_and_neo4j.md</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-25T14:37:30.000Z" title="发表于 2025-05-25 22:37:30">2025-05-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-25T14:40:48.057Z" title="更新于 2025-05-25 22:40:48">2025-05-25</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/ai/">ai</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="how_to_build_rag_model_by_dify_and_neo4j.md"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="基于neo4j数据库和dify大模型框架的rag模型搭建"><a href="#基于neo4j数据库和dify大模型框架的rag模型搭建" class="headerlink" title="基于neo4j数据库和dify大模型框架的rag模型搭建"></a>基于neo4j数据库和dify大模型框架的rag模型搭建</h1><p>本文主要讲述关于如何从pdf文档中提取数据并用于生成知识图谱，搭建基于知识图谱的rag模型的过程。</p>
+<p>（其实就是知识库？有一说一因为根本没上课其实我也不知道我做的是啥，但是大概是符合课设要求的）</p>
+<h2 id="前置准备"><a href="#前置准备" class="headerlink" title="前置准备"></a>前置准备</h2><h3 id="neo4j数据库"><a href="#neo4j数据库" class="headerlink" title="neo4j数据库"></a>neo4j数据库</h3><p>neo4j用于存储从pdf文档中提取的数据。</p>
+<p>安装方式有docker或者直接安装两种方式。</p>
+<p>可以参考<a target="_blank" rel="noopener" href="https://neo4j.com/docs/operations-manual/current/installation/linux/debian/">https://neo4j.com/docs/operations-manual/current/installation/linux/debian/</a></p>
+<p>由于我使用的是直接安装的，因此docker安装方式就不作过多介绍了。</p>
+<p>直接安装的配置如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">主机: Ubuntu 22.04（其实是虚拟机）</span><br><span class="line">jdk: openjdk-21-jdk</span><br><span class="line">neo4j: (version)2025.04.0</span><br></pre></td></tr></table></figure>
+
+<p>由于neo4j是依赖于java运行的，因此需要java环境，如果之前没安装过java的话那很幸运，只需要一个java即可；如果之前已经安装过java，则需要对java版本的优先级进行调整（具体去问ai）。有一说一，其实不推荐安装最新版，因为大多数ai对最新版都不怎么熟悉，很容易出错，不会由于当时我已经装完了，所以只能硬着头皮往下干。（沉没成本不参与重大决策？）</p>
+<p>安装流程</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># 检验java是否安装</span><br><span class="line">java --version</span><br><span class="line">apt list openjdk-*jdk</span><br><span class="line">sudo apt install openjdk-21-jdk</span><br><span class="line">java --version</span><br><span class="line"># 安装neo4j并检验</span><br><span class="line">wget -O - https://debian.neo4j.com/neotechnology.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/neotechnology.gpg</span><br><span class="line">echo &#x27;deb [signed-by=/etc/apt/keyrings/neotechnology.gpg] https://debian.neo4j.com stable latest&#x27; | sudo tee -a /etc/apt/sources.list.d/neo4j.list</span><br><span class="line">sudo apt-get update</span><br><span class="line">apt list -a neo4j</span><br><span class="line">sudo apt-get install neo4j:2025.04.0</span><br><span class="line">neo4j help</span><br></pre></td></tr></table></figure>
+
+<p>第一步是安装java，第二步是将neo4j所在的库添加到apt源中然后用apt安装。</p>
+<p>（其实可以用deb文件包然后dpkg安装，但是官方文档给的会显示不是一个合法的deb文件，肥肠奇怪，无法理解）</p>
+<p>安装完之后将neo4j启动</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo neo4j start</span><br></pre></td></tr></table></figure>
+
+<p>启动成功之后会显示</p>
+<p><img src="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/image-20250525202405716.png" alt="image-20250525202405716"></p>
+<p>之后自动使用守护进程运行，转入后台。</p>
+<p>在回显中可以看到plugins目录和conf目录。先进入&#x2F;var&#x2F;lib&#x2F;neo4j&#x2F;labs中，将其中的apoc开头的jar包拷贝到plugins目录中。如果有需要，还可以去apoc的github仓库中安装额外的补全插件（插件地址为：<a target="_blank" rel="noopener" href="https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/2025.04.0/apoc-2025.04.0-extended.jar%EF%BC%89%E3%80%82">https://github.com/neo4j-contrib/neo4j-apoc-procedures/releases/download/2025.04.0/apoc-2025.04.0-extended.jar）。</a></p>
+<p>然后进入&#x2F;etc&#x2F;neo4j目录中，其中存在neo4j.conf文件，先对其进行修改，修改之后如下。这个修改使得在neo4j的浏览器页面中可以调用apoc函数。</p>
+<p><img src="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/image-20250525203002386.png" alt="image-20250525203002386"></p>
+<p>再作修改，使得其他主机能够访问neo4j。如果在容器中还可能用到host.docker.internal（只适用于macos和windows），当然直接安装就没有这种问题了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># neo4j.conf</span><br><span class="line">server.default_listen_address=0.0.0.0</span><br></pre></td></tr></table></figure>
+
+<p>再在neo4j.conf的同级目录中新建一个apoc.conf，内容为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apoc.import.file.enabled=true</span><br></pre></td></tr></table></figure>
+
+<p>这样neo4j就算安装完成了。</p>
+<p>neo4j的浏览器地址为<a target="_blank" rel="noopener" href="http://ip:7474/browser/%EF%BC%8Cbolt%E7%AB%AF%E5%8F%A3%E4%B8%BA7687%EF%BC%88%E9%BB%98%E8%AE%A4%E6%98%AF%E8%BF%99%E6%A0%B7%EF%BC%89">http://ip:7474/browser/，bolt端口为7687（默认是这样）</a></p>
+<p>使用docker安装的话可以使用-v将docker中的目录映射到主机中，尤其记得要将plugin目录和conf目录映射出来，不然就得使用docker exec进入docker容器中再安装插件，比较麻烦。</p>
+<h3 id="dify框架"><a href="#dify框架" class="headerlink" title="dify框架"></a>dify框架</h3><p>dify框架的安装比较简单，直接使用docker就可以完成安装，而且和neo4j不存在端口冲突。</p>
+<p>首先从github克隆下dify的仓库，按照readme文档中的内容去做即可。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/langgenius/dify.git</span><br><span class="line">cd dify</span><br><span class="line">cd docker</span><br><span class="line">cp .env.example .env</span><br><span class="line">sudo docker compose up -d</span><br></pre></td></tr></table></figure>
+
+<p>如果没有docker compose的可以试一下docker-compose，不然就是没安装。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 关闭dify的命令，在docker-compose.yaml目录下</span><br><span class="line">sudo docker compose down</span><br></pre></td></tr></table></figure>
+
+<p>dify的浏览器访问地址为ip，默认端口为80</p>
+<h2 id="搭建思路"><a href="#搭建思路" class="headerlink" title="搭建思路"></a>搭建思路</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">提取数据 -&gt; 建立数据结构 -&gt; 存入数据库 -&gt; 搭建检索系统 -&gt; 输入llm -&gt; 得到最终输出</span><br></pre></td></tr></table></figure>
+
+<p>关于提取数据、建立数据结构、存入数据库这三个部分，可将其视为一个部分，也就是将文档中的数据存入数据库。</p>
+<h2 id="提取数据存入数据库"><a href="#提取数据存入数据库" class="headerlink" title="提取数据存入数据库"></a>提取数据存入数据库</h2><h3 id="提取数据"><a href="#提取数据" class="headerlink" title="提取数据"></a>提取数据</h3><p>数据存储在pdf文档中，在对数据进行读取时还需要对其进行词义分析，将其分类、分段，保留它原先的意思，但是又便于检索。</p>
+<p>好在这一步不需要我们手动完成，只需要对数据进行提取，然后交给专门的语言模型处理即可😋。</p>
+<p>由于数据是存储在pdf文档中，可以使用pdfplumer进行读取，再使用spacy对其进行分段。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">补充关于token的小知识：</span><br><span class="line">在大型语言模型（LLM）中，Token 是模型处理文本数据的基本单位。Token是LLM理解、处理和生成人类语言的基础单位。通过将文本分解为Token，LLM能够将复杂的语言转换为其可以进行数学运算的数字表示形式，从而实现各种强大的自然语言处理能力。</span><br></pre></td></tr></table></figure>
+
+<p>所以说将语句进行分段是必要的。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># 核心代码</span><br><span class="line">with pdfplumber.open(pdf_path) as pdf:</span><br><span class="line">        chunks = []</span><br><span class="line">        # 使用spacy分句</span><br><span class="line">        nlp = spacy.load(&quot;zh_core_web_sm&quot;)</span><br><span class="line">        for idx,page in tqdm(enumerate(pdf.pages), total=len(pdf.pages), desc=&quot;Processing PDF&quot;):</span><br><span class="line">            text = page.extract_text()</span><br><span class="line">            meta = &#123;</span><br><span class="line">                &quot;page_number&quot;: page.page_number,</span><br><span class="line">                &quot;page_width&quot;: page.width,</span><br><span class="line">                &quot;page_height&quot;: page.height</span><br><span class="line">            &#125;</span><br><span class="line">            doc = nlp(text)</span><br><span class="line">            sentences = [sent.text.replace(&#x27;\n&#x27;, &#x27; &#x27;).replace(&#x27;\r&#x27;, &#x27; &#x27;).strip() for sent in doc.sents]</span><br><span class="line">            # 合并为段落（每段3句）</span><br><span class="line">            for i in range(0, len(sentences), 3):</span><br><span class="line">                chunk_text = &quot;&quot;.join(sentences[i:i+3])</span><br><span class="line">                chunks.append(&#123;</span><br><span class="line">                    &quot;text&quot;: chunk_text,</span><br><span class="line">                    &quot;page_number&quot;: meta[&quot;page_number&quot;],</span><br><span class="line">                    &quot;start_pos&quot;: i,</span><br><span class="line">                    &quot;end_pos&quot;: i+3</span><br><span class="line">                &#125;)</span><br></pre></td></tr></table></figure>
+
+<p>在上述代码中使用spacy中的专门处理中文的模型zh_core_web_sm对从pdf中提取出的数据进行分句，并给其标注信息，如页号等。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当然也可以使用其他的类似模型或者更好的模型，使用更好的模型得到的效果也就更好</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成向量索引"><a href="#生成向量索引" class="headerlink" title="生成向量索引"></a>生成向量索引</h3><p>token的向量索引，也称为Token Embeddings。在token的向量索引中包含了token的词义信息，也可以快速的检索到token，在之后的检索系统中会用到。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">如果不使用向量索引的话，也可以根据输入的关键词对数据库进行检索，这种就很好理解了。</span><br><span class="line">其实使用向量索引也是类似这种用法，只不过是对关键词的词义也进行相关性检索，而不是单纯的仅凭关键词本身。</span><br></pre></td></tr></table></figure>
+
+<p>生成向量索引的过程自然也是不需要我们多虑的，也有专门的模型用于创建向量索引。<br>生成的向量索引维度为384。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">model = SentenceTransformer(<span class="string">&#x27;paraphrase-multilingual-MiniLM-L12-v2&#x27;</span>)</span><br><span class="line">vectors = model.encode([chunk[<span class="string">&quot;text&quot;</span>] <span class="keyword">for</span> chunk <span class="keyword">in</span> chunks], batch_size=<span class="number">32</span>)</span><br><span class="line"><span class="keyword">for</span> i, chunk <span class="keyword">in</span> <span class="built_in">enumerate</span>(chunks):</span><br><span class="line">    vectors[i] = [x <span class="keyword">for</span> x <span class="keyword">in</span> vectors[i]]</span><br><span class="line">    chunk[<span class="string">&quot;vector&quot;</span>] = vectors[i].tolist()</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">模型选择并不唯一，但是越好的模型生成的效果肯定是更好的</span><br></pre></td></tr></table></figure>
+
+<h3 id="存储到数据库"><a href="#存储到数据库" class="headerlink" title="存储到数据库"></a>存储到数据库</h3><p>接下来将其存储到数据库中，在本文中使用的是neo4j数据库，类型为nosql，主要是用于图的存储。</p>
+<p>在存储到数据库中时需要创建不同的节点并且指出其相关关系，例如在如下代码中就创建了book节点和chunk节点两种节点，其中chunk节点属于book节点，构成了图。还添加了一些额外的meta data，便于管理和识别。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">driver = GraphDatabase.driver(<span class="string">&quot;bolt://ip:port&quot;</span>, auth=(<span class="string">&quot;neo4j&quot;</span>, <span class="string">&quot;password&quot;</span>))</span><br><span class="line"><span class="keyword">with</span> driver.session() <span class="keyword">as</span> session:</span><br><span class="line">    <span class="comment"># 创建Book节点</span></span><br><span class="line">    session.run(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">        CREATE (b:Book &#123;</span></span><br><span class="line"><span class="string">            book_id: $book_id,</span></span><br><span class="line"><span class="string">            title: $title,</span></span><br><span class="line"><span class="string">            author: $author</span></span><br><span class="line"><span class="string">        &#125;)</span></span><br><span class="line"><span class="string">    &quot;&quot;&quot;</span>, book_meta)</span><br><span class="line">        </span><br><span class="line">    <span class="comment"># 创建Chunk节点及关系</span></span><br><span class="line">    <span class="keyword">for</span> chunk <span class="keyword">in</span> chunks:</span><br><span class="line">        session.run(<span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">            MATCH (b:Book &#123;book_id: $book_id&#125;)</span></span><br><span class="line"><span class="string">            CREATE (c:Chunk &#123;</span></span><br><span class="line"><span class="string">                chunk_id: $chunk_id,</span></span><br><span class="line"><span class="string">                text: $text,</span></span><br><span class="line"><span class="string">                page_number: $page_number,</span></span><br><span class="line"><span class="string">                start_pos: $start_pos,</span></span><br><span class="line"><span class="string">                end_pos: $end_pos,</span></span><br><span class="line"><span class="string">                vector: $vector</span></span><br><span class="line"><span class="string">            &#125;)</span></span><br><span class="line"><span class="string">            CREATE (c)-[:BELONGS_TO]-&gt;(b)</span></span><br><span class="line"><span class="string">        &quot;&quot;&quot;</span>, &#123;</span><br><span class="line">            <span class="string">&quot;book_id&quot;</span>: book_meta[<span class="string">&quot;book_id&quot;</span>],</span><br><span class="line">            <span class="string">&quot;chunk_id&quot;</span>: <span class="string">f&quot;<span class="subst">&#123;book_meta[<span class="string">&#x27;book_id&#x27;</span>]&#125;</span>_chunk_<span class="subst">&#123;chunk[<span class="string">&#x27;page_number&#x27;</span>]&#125;</span>_<span class="subst">&#123;chunk[<span class="string">&#x27;start_pos&#x27;</span>]&#125;</span>&quot;</span>,</span><br><span class="line">            **chunk</span><br><span class="line">        &#125;)</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建数据库索引"><a href="#创建数据库索引" class="headerlink" title="创建数据库索引"></a>创建数据库索引</h3><p>虽然听起来跟之前的向量索引有些相似，但是不是一个东西，之前的索引是作为节点的数据而存在，而现在要创建的数据库索引是为了提升数据库的查询效率而使用的，并且能够高效地执行语义相似度搜索，为检索系统的搭建作准备。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">driver = GraphDatabase.driver(<span class="string">&quot;bolt://ip:port&quot;</span>, auth=(<span class="string">&quot;neo4j&quot;</span>, <span class="string">&quot;password&quot;</span>))</span><br><span class="line"><span class="keyword">with</span> driver.session() <span class="keyword">as</span> session:</span><br><span class="line">    <span class="comment"># 创建vector的索引</span></span><br><span class="line">    session.run(</span><br><span class="line">        <span class="string">&quot;&quot;&quot;CREATE VECTOR INDEX chunk_vector_index </span></span><br><span class="line"><span class="string">        FOR (c:Chunk) ON (c.vector) OPTIONS</span></span><br><span class="line"><span class="string">        &#123; indexConfig: &#123; `vector.dimensions`: 384,`vector.similarity_function`: &#x27;cosine&#x27;&#125;&#125;&quot;&quot;&quot;</span></span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
+
+<p>（这里有一个坑，就是如果你使用低版本的neo4j的话，ai会使用apoc中跟vector相关的代码，就可以直接使用。但是由于版本太高了，vector函数被内置到neo4j里，apoc的函数就废弃了，这个函数还是从官方文档里搜出来的，肥肠难受😫）</p>
+<h2 id="搭建检索系统"><a href="#搭建检索系统" class="headerlink" title="搭建检索系统"></a>搭建检索系统</h2><p>所有对数据的前置准备已经完成，接下来要搭建的是检索系统，用于从数据库中检索出跟用户输入最相关的词条。</p>
+<p>首先，要将用户输入的内容也转为向量索引，才好进行比较。</p>
+<p>然后使用neo4j中内置的vector比较函数，将相关的数据从neo4j中取出，按照相关性进行排序。</p>
+<p>为了提高相关性的准确度，这里可以使用reranker模型进行重排序，得到真正相关性更高的结果。</p>
+<p>然后再根据得到相关内容，回到文档中原来的位置，提取其上下文，提高答案的正确率。</p>
+<p>因此，检索系统分为四个部分。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">输入转换 -&gt; 向量检索 -&gt; 重排序 -&gt; 提取上下文</span><br></pre></td></tr></table></figure>
+
+<p>后两个步骤是可选的，在我写的代码中设置了选项，在使用时可选也可不选。只是不选的话得到的答案比较没人样，或者直接得不到答案而已。</p>
+<p>听起来比较简单，其实做起来也不是很难（毕竟大部分代码都不是我写的）。</p>
+<p>不过由于后续要使用dify框架，所以这里将检索系统封装为了一个http的api，便于后续的调用，使用的是fastapi。（主要是我感觉dify里面的代码执行应该是不允许搞这么复杂的，当然我也没仔细研究过）</p>
+<h2 id="输入llm"><a href="#输入llm" class="headerlink" title="输入llm"></a>输入llm</h2><p>这个部分也比较简单，选择一个自己喜欢的模型，然后设置好prompt和参数就好了。</p>
+<p>prompt可参考：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">你是一个专业书籍问答助手，请严格基于用户提供的&lt;上下文&gt;回答问题。</span><br><span class="line">若问题与上下文无关或超出知识范围，必须回答&quot;未找到相关信息&quot;。</span><br><span class="line">回答必须满足以下要求：</span><br><span class="line">1. 答案需完整覆盖问题核心，避免冗余</span><br><span class="line">2. 必须使用中文口语化表达，禁用Markdown格式</span><br><span class="line">3. 若上下文存在矛盾信息，需指出矛盾点</span><br><span class="line"></span><br><span class="line">&#123;&#123;#context#&#125;&#125;</span><br><span class="line"></span><br><span class="line">问题：</span><br><span class="line">&#123;&#123;#sys.query#&#125;&#125;</span><br><span class="line"></span><br><span class="line">请按以下格式回答：</span><br><span class="line">【答案摘要】</span><br><span class="line">简明总结核心答案（1-2句话）</span><br><span class="line"></span><br><span class="line">【详细解释】</span><br><span class="line">分点说明推导过程和依据</span><br><span class="line"></span><br><span class="line">【相关延伸】</span><br><span class="line">推荐2-3个关联知识点（可选）</span><br></pre></td></tr></table></figure>
+
+<p>实际上llm部分是在dify框架中完成的，所以要先启动dify，如何启动在前置准备章节中已经有详细描述，但是还有一个点没提到，那就是需要注册一个模型api平台的账号，这里我选择的是硅基流动，其实用deepseek或者豆包之类的平台也是一样的，只要它们有提供api的接口就可以。</p>
+<h3 id="硅基流动注册"><a href="#硅基流动注册" class="headerlink" title="硅基流动注册"></a>硅基流动注册</h3><p>注册只需要手机号验证就可以了（ps：我本来想用github登的，但是登完还是要手机号😓）</p>
+<p>如果没有邀请码可以填我的：f1EqQpK5</p>
+<p>双方都会获得免费的2000w tokens，我当时注册也是随便搜了一个邀请码就填上了。</p>
+<p>注册成功之后在左侧的工具栏中有一个api密钥，新建一个，密钥描述随便写（当然填dify也可以）。</p>
+<h3 id="dify初始化"><a href="#dify初始化" class="headerlink" title="dify初始化"></a>dify初始化</h3><p>第一次进入dify会要求输入管理员账户，如果是自己用的话随便输一个也没事，有别人要用的话还是设置得复杂一点。</p>
+<p>登录成功之后点击右上角的头像&gt;设置&gt;模型供应商，可以看到有很多家，选择硅基流动，输入之前新建的api密钥即可。</p>
+<p>这就算初始化完成了。</p>
+<h3 id="dify-chatflow搭建"><a href="#dify-chatflow搭建" class="headerlink" title="dify_chatflow搭建"></a>dify_chatflow搭建</h3><p>接下来根据之前的思路，也就是数据-&gt;检索-&gt;llm的流程搭建dify工作流，注意已经将检索系统封装为http的api并且在本地启动，并且数据也已经输入到数据库中。</p>
+<p><img src="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/image-20250525213001882.png" alt="image-20250525213001882"></p>
+<p>工作流的流程很简单，看看其内部构造</p>
+<h4 id="http请求"><a href="#http请求" class="headerlink" title="http请求"></a>http请求</h4><img src="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/image-20250525213225134.png" alt="image-20250525213225134" style="zoom:50%;">
+
+<p>封装了search接口，query是用户在对话框的输入，expand_window是上下文的窗口大小，默认开启了上下文检索但是没有开启重排序，参数类型为json。</p>
+<h4 id="代码执行"><a href="#代码执行" class="headerlink" title="代码执行"></a>代码执行</h4><img src="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/image-20250525213359658.png" alt="image-20250525213359658" style="zoom:50%;">
+
+<p>使用http请求的返回值作为输入，解析json，并且提取其中的text的值，返回值为list。</p>
+<h4 id="llm"><a href="#llm" class="headerlink" title="llm"></a>llm</h4><img src="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/image-20250525213522940.png" alt="image-20250525213522940" style="zoom:50%;">
+
+<p>prompt在上文中已给出，使用的是千问8B的模型（因为不要钱），真好，也可以自己在主机上跑一个开源的大模型，但是我指定不行，等下笔记本烧了😓。</p>
+<p>最后一个选直接回复即可，以llm的输出作为输入。</p>
+<p>对于小段文本的测试效果还不错，但是没有使用指标进行度量。其实是可以对性能进行评估的，但是我比较懒，课设的话没必要纠结太多（</p>
+<p>而且如果要人工评估的话就要打标签，要用ai评估的话好像也比较麻烦，还得跑很多轮。</p>
+<h3 id="dify-workflow搭建"><a href="#dify-workflow搭建" class="headerlink" title="dify_workflow搭建"></a>dify_workflow搭建</h3><p>和chatflow差不多，只是开始时需要输入，结束时需要输出。</p>
+<p><img src="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/image-20250525221425847.png" alt="image-20250525221425847"></p>
+<h2 id="改进方案"><a href="#改进方案" class="headerlink" title="改进方案"></a>改进方案</h2><p>可以改进的方向有很多</p>
+<p>1、在分句和创建向量时使用更好的模型</p>
+<p>2、额外安装一个索引数据库，在neo4j中只存放索引的索引，可以有效提高查询的效率。</p>
+<p>3、额外安装一个缓存数据库，如redis，也可以有效提高查询效率。</p>
+<p>4、搭建检索系统时可以进行加权，对不同的权值进行调整</p>
+<p>5、使用付费的高级llm和更加高级、专业的prompt</p>
+<p>6、优化数据结构，例如在搭建的过程中我其实想给出每段文章的页码，但是这样的话要对数据结构进行修改，所以就没有做了</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://zx2023qj.github.io">zx</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://zx2023qj.github.io/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/">https://zx2023qj.github.io/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://zx2023qj.github.io" target="_blank">zx's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ai/">ai</a><a class="post-meta__tags" href="/tags/%E5%AD%A6%E4%B9%A0/">学习</a></div><div class="post_share"><div class="social-share" data-image="/img/3.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2025/04/11/first-src/" title="first-src"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">first-src</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/09/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A01/" title="机器学习1"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-19</div><div class="title">机器学习1</div></div></a></div><div><a href="/2024/12/06/%E6%AF%9B%E6%A6%82%E5%A4%8D%E4%B9%A0/" title="毛概复习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-06</div><div class="title">毛概复习</div></div></a></div><div><a href="/2025/01/02/%E4%B9%A0%E6%A6%82%E5%A4%8D%E4%B9%A0/" title="习概复习"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-01-02</div><div class="title">习概复习</div></div></a></div><div><a href="/2025/02/25/%E8%80%83%E7%A0%94%E6%8B%A9%E6%A0%A1/" title="考研择校"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-02-25</div><div class="title">考研择校</div></div></a></div><div><a href="/2025/03/08/%E6%95%B0%E4%B8%80/" title="数一"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-08</div><div class="title">数一</div></div></a></div><div><a href="/2025/03/03/%E8%BF%9B%E5%BA%A6/" title="进度"><div class="cover" style="background: var(--default-bg-color)"></div><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2025-03-03</div><div class="title">进度</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/3.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">zx</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">43</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">36</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">24</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/zx2023qj"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8Eneo4j%E6%95%B0%E6%8D%AE%E5%BA%93%E5%92%8Cdify%E5%A4%A7%E6%A8%A1%E5%9E%8B%E6%A1%86%E6%9E%B6%E7%9A%84rag%E6%A8%A1%E5%9E%8B%E6%90%AD%E5%BB%BA"><span class="toc-number">1.</span> <span class="toc-text">基于neo4j数据库和dify大模型框架的rag模型搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E7%BD%AE%E5%87%86%E5%A4%87"><span class="toc-number">1.1.</span> <span class="toc-text">前置准备</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#neo4j%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.1.1.</span> <span class="toc-text">neo4j数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dify%E6%A1%86%E6%9E%B6"><span class="toc-number">1.1.2.</span> <span class="toc-text">dify框架</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E6%80%9D%E8%B7%AF"><span class="toc-number">1.2.</span> <span class="toc-text">搭建思路</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%90%E5%8F%96%E6%95%B0%E6%8D%AE%E5%AD%98%E5%85%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.3.</span> <span class="toc-text">提取数据存入数据库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8F%90%E5%8F%96%E6%95%B0%E6%8D%AE"><span class="toc-number">1.3.1.</span> <span class="toc-text">提取数据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%9F%E6%88%90%E5%90%91%E9%87%8F%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">生成向量索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%88%B0%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.3.3.</span> <span class="toc-text">存储到数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E5%BA%93%E7%B4%A2%E5%BC%95"><span class="toc-number">1.3.4.</span> <span class="toc-text">创建数据库索引</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%90%AD%E5%BB%BA%E6%A3%80%E7%B4%A2%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.4.</span> <span class="toc-text">搭建检索系统</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%93%E5%85%A5llm"><span class="toc-number">1.5.</span> <span class="toc-text">输入llm</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A1%85%E5%9F%BA%E6%B5%81%E5%8A%A8%E6%B3%A8%E5%86%8C"><span class="toc-number">1.5.1.</span> <span class="toc-text">硅基流动注册</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dify%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">1.5.2.</span> <span class="toc-text">dify初始化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dify-chatflow%E6%90%AD%E5%BB%BA"><span class="toc-number">1.5.3.</span> <span class="toc-text">dify_chatflow搭建</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#http%E8%AF%B7%E6%B1%82"><span class="toc-number">1.5.3.1.</span> <span class="toc-text">http请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E6%89%A7%E8%A1%8C"><span class="toc-number">1.5.3.2.</span> <span class="toc-text">代码执行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#llm"><span class="toc-number">1.5.3.3.</span> <span class="toc-text">llm</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#dify-workflow%E6%90%AD%E5%BB%BA"><span class="toc-number">1.5.4.</span> <span class="toc-text">dify_workflow搭建</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B9%E8%BF%9B%E6%96%B9%E6%A1%88"><span class="toc-number">1.6.</span> <span class="toc-text">改进方案</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/25/how-to-build-rag-model-by-dify-and-neo4j-md/" title="how_to_build_rag_model_by_dify_and_neo4j.md">how_to_build_rag_model_by_dify_and_neo4j.md</a><time datetime="2025-05-25T14:37:30.000Z" title="发表于 2025-05-25 22:37:30">2025-05-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/11/first-src/" title="first-src">first-src</a><time datetime="2025-04-11T08:13:32.000Z" title="发表于 2025-04-11 16:13:32">2025-04-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/01/%E6%AF%8F%E6%97%A5%E4%B8%80%E9%A2%98/" title="每日一题">每日一题</a><time datetime="2025-04-01T13:00:28.000Z" title="发表于 2025-04-01 21:00:28">2025-04-01</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/26/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" title="数据结构">数据结构</a><time datetime="2025-03-26T05:26:18.000Z" title="发表于 2025-03-26 13:26:18">2025-03-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/03/22/Reversing-Secrets-of-Reverse-Engineering/" title="Reversing Secrets of Reverse Engineering">Reversing Secrets of Reverse Engineering</a><time datetime="2025-03-22T14:35:57.000Z" title="发表于 2025-03-22 22:35:57">2025-03-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By zx</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
